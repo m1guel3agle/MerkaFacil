@@ -11,58 +11,100 @@
             padding: 0;
         }
 
+        .navbar {
+            background: #222;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .navbar a button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
         .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 10px;
         }
 
         h1 {
-            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        p {
-            line-height: 1.6;
+        .team {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1px;
+            padding: px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            background: #eee;
+        }
+
+        .card h3 {
+            margin: 10px 0 5px 0;
+        }
+
+        .card p {
+            font-size: 14px;
             color: #555;
         }
     </style>
 </head>
 <body>
 
+    <div class="navbar">
+        <a href="/"><button>Inicio</button></a>
+        <a href="/productos/"><button>Catálogo</button></a>
+        <a href="/acerca/"><button>Acerca de nosotros</button></a>
+    </div>
+
     <div class="container">
-        <h1>Acerca de Merkafacil</h1>
+        <h1>Sobre nosotros</h1>
 
-        <p>
-            Merkafacil nace con la idea de facilitar la gestión de tiendas pequeñas y medianas,
-            donde normalmente una sola persona debe encargarse de ventas, inventario, clientes y caja al mismo tiempo.
+        <p style="text-align:center; margin-bottom:30px;">
+            En Merkafacil buscamos ofrecer productos de calidad, buenos precios y una experiencia simple y rápida para nuestros clientes.
         </p>
 
-        <p>
-            Sabemos que este trabajo puede volverse caótico, lento y estresante, tanto para el empleado
-            como para el cliente. Por eso, creamos una plataforma sencilla que ayuda a organizar el negocio,
-            agilizar las ventas y reducir errores en el día a día.
-        </p>
+        <div class="team">
+            <div class="card">
+                <img src="\media\productos\juan.png" alt="Integrante 1">
+                <h3>Juan Jose Montoya</h3>
+                <p>Encargado de administración y desarrollo de la app.</p>
+            </div>
 
-        <h2>Nuestra misión</h2>
-        <p>
-            Nuestra misión es hacer que la tecnología sea una herramienta simple y útil para los pequeños comercios,
-            permitiéndoles trabajar de forma más ordenada, rápida y eficiente.
-        </p>
+            <div class="card">
+                <img src="\media\productos\migue.png" alt="Integrante 2">
+                <h3>Miguel Angel Aguilar</h3>
+                <p>Responsable de atención al cliente y control de inventario.</p>
+            </div>
 
-        <h2>¿Qué ofrece Merkafacil?</h2>
-        <ul>
-            <li>Gestión de productos e inventario</li>
-            <li>Registro rápido de ventas</li>
-            <li>Organización de clientes</li>
-            <li>Reportes básicos para tomar mejores decisiones</li>
-        </ul>
-
-        <p>
-            Merkafacil está pensado para crecer poco a poco, siempre enfocado en hacer la vida más fácil
-            a quienes trabajan en tiendas y a quienes compran en ellas.
-        </p>
+            <div class="card">
+                <img src="\media\samuel.jpeg" alt="Integrante 3">
+                <h3>Samuel Orozco</h3>
+                <p>Product owner, encargado de levantar requerimientos al cliente.</p>
+            </div>
+        </div>
     </div>
 
 </body>
