@@ -18,11 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
     path("productos/", include("productos.urls")),
+    path("carrito/", include("carrito.urls")),
 ]
 
 if settings.DEBUG:

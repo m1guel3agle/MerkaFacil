@@ -1,0 +1,19 @@
+<h2>🛒 Tu carrito</h2>
+
+{% if request.session.carrito.items %}
+    
+    {% for key,value in request.session.carrito.items %}
+    
+        <p>
+            {{value.nombre}} |
+            Precio: ${{value.precio}} |
+            Cantidad: {{value.cantidad}}
+        </p>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>Tu carrito está vacío</p>
+
+{% endif %}
