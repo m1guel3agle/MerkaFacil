@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from .carrito import Carrito
 from productos.models import Producto
-
+from django.contrib.auth.decorators import login_required
 
 def agregar_producto(request, producto_id):
 
@@ -12,6 +12,7 @@ def agregar_producto(request, producto_id):
 
     return redirect("productos")
 
+@login_required
 
 def ver_carrito(request):
 

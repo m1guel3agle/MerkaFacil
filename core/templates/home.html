@@ -1,57 +1,136 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Merkafacil</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-        }
+{% extends "base.html" %}
 
-        .navbar {
-            background: #222;
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-        }
+{% block content %}
 
-        .navbar button {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 6px;
-            background: #4CAF50;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
+<style>
 
-        .navbar button:hover {
-            background: #43a047;
-        }
+.hero{
+    background: white;
+    padding:60px;
+    border-radius:10px;
+    text-align:center;
+    margin-bottom:40px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
 
-        .content {
-            padding: 40px;
-        }
-    </style>
-</head>
-<body>
+.hero h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
 
-    <div class="navbar">
-        <button>Iniciar sesion</button>
-        
-<a href="{% url 'catalogo' %}"><button>Productos</button></a>
+.hero p{
+    font-size:18px;
+    color:#555;
+}
 
-<a href="{% url 'about' %}">
-    <button>Acerca de nosotros</button>
+.hero button{
+    margin-top:20px;
+    padding:12px 25px;
+    border:none;
+    border-radius:6px;
+    background:#4CAF50;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.hero button:hover{
+    background:#43a047;
+}
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:40px;
+}
+
+.feature-card{
+    background:white;
+    padding:25px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.feature-card h3{
+    margin-bottom:10px;
+}
+
+.preview{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.preview h2{
+    margin-bottom:20px;
+}
+
+.preview button{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    background:#2196F3;
+    color:white;
+    cursor:pointer;
+}
+
+.preview button:hover{
+    background:#1976D2;
+}
+
+</style>
+
+
+<div class="hero">
+
+<h1>Bienvenido a Merkafacil</h1>
+
+<p>
+La plataforma simple para gestionar tu tienda y comprar productos de forma rápida.
+</p>
+
+<a href="{% url 'catalogo' %}">
+<button>Ver productos</button>
 </a>
-    </div>
 
-    <div class="content">
-        <h1>Bienvenido a Merkafacil</h1>
-        <p>Panel principal del sistema para tiendas pequeñas.</p>
-    </div>
+</div>
 
-</body>
-</html>
+
+<div class="features">
+
+<div class="feature-card">
+<h3>Compras rápidas</h3>
+<p>Encuentra productos fácilmente y agrégalos al carrito en segundos.</p>
+</div>
+
+<div class="feature-card">
+<h3>Gestión simple</h3>
+<p>Administración clara de productos y stock para pequeñas tiendas.</p>
+</div>
+
+<div class="feature-card">
+<h3>Seguro</h3>
+<p>Usuarios registrados para una experiencia confiable.</p>
+</div>
+
+</div>
+
+
+<div class="preview">
+
+<h2>Explora nuestro catálogo</h2>
+
+<p>
+Descubre los productos disponibles en nuestra tienda y agrégalos a tu carrito.
+</p>
+
+<a href="{% url 'catalogo' %}">
+<button>Ir al catálogo</button>
+</a>
+
+</div>
+
+{% endblock %}
