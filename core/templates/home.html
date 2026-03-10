@@ -96,6 +96,15 @@ La plataforma simple para gestionar tu tienda y comprar productos de forma rápi
 <button>Ver productos</button>
 </a>
 
+<a href="{% url 'about' %}">
+    <button>Acerca de nosotros</button>
+
+<a href="{% url 'carrito' %}">
+    <button>
+        Carrito ({{ request.session.carrito|length }})
+    </button>
+</a>
+    </div>
 </div>
 
 
