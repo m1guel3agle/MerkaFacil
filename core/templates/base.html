@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Merkafacil</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar {
+            background: #222;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .navbar a {
+            text-decoration: none;
+        }
+
+        .navbar button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #4CAF50;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .navbar button:hover {
+            background: #43a047;
+        }
+
+        .navbar .user {
+            color: white;
+            margin-left: auto;
+            margin-right: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="navbar">
+
+        <a href="/">
+            <button>Inicio</button>
+        </a>
+
+        <a href="{% url 'catalogo' %}">
+            <button>Productos</button>
+        </a>
+
+        <a href="{% url 'about' %}">
+            <button>Acerca de nosotros</button>
+        </a>
+
+
+        {% if user.is_authenticated %}
+
+            <span class="user">
+                Hola {{ user.username }}
+            </span>
+
+            <a href="{% url 'logout' %}">
+                <button>Cerrar sesión</button>
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'login' %}">
+                <button>Iniciar sesión</button>
+            </a>
+
+            <a href="{% url 'signup' %}">
+                <button>Registrarse</button>
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="content">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</body>
+
+</html>
