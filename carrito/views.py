@@ -5,12 +5,13 @@ from productos.models import Producto
 
 def agregar_producto(request, producto_id):
 
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id=producto_id)
+    carrito = request.session.get("carrito", [])
 
-    carrito.agregar(producto)
+    carrito.append(producto_id)
 
-    return redirect("productos")
+    request.session["carrito"] = carrito
+
+    return redirect("catalogo")
 
 
 def ver_carrito(request):

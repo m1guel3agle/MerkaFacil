@@ -45,6 +45,11 @@
 
 <a href="{% url 'about' %}">
     <button>Acerca de nosotros</button>
+
+<a href="{% url 'carrito' %}">
+    <button>
+        Carrito ({{ request.session.carrito|length }})
+    </button>
 </a>
     </div>
 
