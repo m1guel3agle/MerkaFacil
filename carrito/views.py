@@ -1,20 +1,38 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from .carrito import Carrito
 from productos.models import Producto
-from django.contrib.auth.decorators import login_required
+
 
 def agregar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = get_object_or_404(Producto, id=producto_id)
+    carrito.agregar(producto)
+    return redirect(request.META.get("HTTP_REFERER", "catalogo"))
 
-    carrito = request.session.get("carrito", [])
 
-    carrito.append(producto_id)
+def restar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = get_object_or_404(Producto, id=producto_id)
+    carrito.restar(producto)
+    return redirect("carrito")
 
-    request.session["carrito"] = carrito
 
-    return redirect("catalogo")
+def eliminar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = get_object_or_404(Producto, id=producto_id)
+    carrito.eliminar(producto)
+    return redirect("carrito")
 
-@login_required
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.limpiar()
+    return redirect("carrito")
+
 
 def ver_carrito(request):
-
-    return render(request, "carrito/carrito.html")
+    carrito = Carrito(request)
+    return render(request, "carrito/carrito.html", {
+        "carrito": carrito,
+        "total": carrito.total(),
+    })

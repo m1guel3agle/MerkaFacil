@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -52,6 +51,38 @@
             padding: 40px;
         }
 
+        /* ── Carrito badge ── */
+        .carrito-btn {
+            position: relative;
+            display: inline-block;
+            margin-left: auto;   /* empuja el carrito hacia la derecha */
+        }
+
+        .carrito-btn button {
+            background: #FB8C00;  /* naranja para distinguirlo del resto */
+        }
+
+        .carrito-btn button:hover {
+            background: #E65100;
+        }
+
+        .carrito-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
     </style>
 
 </head>
@@ -72,6 +103,13 @@
             <button>Acerca de nosotros</button>
         </a>
 
+        <!-- Botón carrito con contador -->
+        <a href="{% url 'carrito' %}" class="carrito-btn">
+            <button>🛒 Carrito</button>
+            {% if contador_carrito > 0 %}
+                <span class="carrito-badge">{{ contador_carrito }}</span>
+            {% endif %}
+        </a>
 
         {% if user.is_authenticated %}
 
