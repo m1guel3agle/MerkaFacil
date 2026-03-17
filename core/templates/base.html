@@ -117,6 +117,10 @@
                 Hola {{ user.username }}
             </span>
 
+            <a href="{% url 'mis_pedidos' %}">
+                <button>📋 Mis pedidos</button>
+            </a>
+
             <a href="{% url 'logout' %}">
                 <button>Cerrar sesión</button>
             </a>
