@@ -93,7 +93,17 @@
         text-decoration: none;
     }
     .btn-seguir:hover { background: #1565C0; }
-    .vacio { text-align: center; padding: 40px; color: #888; font-size: 18px; }
+    .btn-comprar {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: bold;
+    }
+    .btn-comprar:hover { background: #388E3C; }
 </style>
 
 <div class="carrito-container">
@@ -156,6 +166,16 @@
             <a href="{% url 'limpiar_carrito' %}">
                 <button class="btn-vaciar">🗑 Vaciar carrito</button>
             </a>
+            {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'realizar_compra' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-comprar">✅ Realizar compra</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-comprar" style="text-decoration:none; display:inline-block;">
+                    Iniciar sesión para comprar
+                </a>
+            {% endif %}
         </div>
 
     {% else %}

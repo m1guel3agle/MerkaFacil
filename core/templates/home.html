@@ -13,9 +13,10 @@
     box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
-.hero h1{
-    font-size:40px;
-    margin-bottom:10px;
+.hero img {
+    width: 380px;
+    max-width: 85%;
+    margin-bottom: 10px;
 }
 
 .hero p{
@@ -86,25 +87,26 @@
 
 <div class="hero">
 
-<h1>Bienvenido a Merkafacil</h1>
+    <img src="/media/logo.jpg" alt="Merkafacil">
 
-<p>
-La plataforma simple para gestionar tu tienda y comprar productos de forma rápida.
-</p>
+    <p>
+    La plataforma simple para gestionar tu tienda y comprar productos de forma rápida.
+    </p>
 
-<a href="{% url 'catalogo' %}">
-<button>Ver productos</button>
-</a>
+    <a href="{% url 'catalogo' %}">
+        <button>Ver productos</button>
+    </a>
 
-<a href="{% url 'about' %}">
-    <button>Acerca de nosotros</button>
+    <a href="{% url 'about' %}">
+        <button>Acerca de nosotros</button>
+    </a>
 
-<a href="{% url 'carrito' %}">
-    <button>
-        Carrito ({{ request.session.carrito|length }})
-    </button>
-</a>
-    </div>
+    <a href="{% url 'carrito' %}">
+        <button>
+            Carrito ({{ request.session.carrito|length }})
+        </button>
+    </a>
+
 </div>
 
 
