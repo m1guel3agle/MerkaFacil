@@ -1,7 +1,9 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, "home.html")
+    from productos.models import Producto
+    productos_preview = Producto.objects.all()[:4]
+    return render(request, "home.html", {"productos_preview": productos_preview})
 
 def about(request):
     return render(request, "about.html")
