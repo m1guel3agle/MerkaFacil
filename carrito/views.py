@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .carrito import Carrito
 from .models import Pedido, ItemPedido
 from productos.models import Producto
+from core.models import ConfigTienda
 
 
 def agregar_producto(request, producto_id):
@@ -34,15 +35,30 @@ def limpiar_carrito(request):
 
 def ver_carrito(request):
     carrito = Carrito(request)
+    tienda = ConfigTienda.get()
     return render(request, "carrito/carrito.html", {
         "carrito": carrito,
         "total": carrito.total(),
+        "tienda_abierta": tienda.abierta,
+        "mensaje_cierre": tienda.mensaje_cierre,
     })
 
 
 @login_required
 def realizar_compra(request):
     if request.method == "POST":
+
+        tienda = ConfigTienda.get()
+        if not tienda.abierta:
+            carrito = Carrito(request)
+            return render(request, "carrito/carrito.html", {
+                "carrito": carrito,
+                "total": carrito.total(),
+                "tienda_abierta": False,
+                "mensaje_cierre": tienda.mensaje_cierre,
+                "error_compra": tienda.mensaje_cierre,
+            })
+
         carrito = Carrito(request)
 
         if not carrito.carrito:

@@ -104,6 +104,23 @@
         font-weight: bold;
     }
     .btn-comprar:hover { background: #388E3C; }
+    .aviso-cierre {
+        background: #fff3cd;
+        border: 2px solid #f0ad4e;
+        border-radius: 10px;
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        color: #7a5500;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .btn-comprar:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
 </style>
 
 <div class="carrito-container">
@@ -161,16 +178,32 @@
             </tfoot>
         </table>
 
+        {% if error_compra %}
+        <div class="aviso-cierre">
+            🔒 {{ error_compra }}
+        </div>
+        {% endif %}
+
+        {% if not tienda_abierta %}
+        <div class="aviso-cierre">
+            🔒 {{ mensaje_cierre }}
+        </div>
+        {% endif %}
+
         <div class="acciones">
             <a href="{% url 'catalogo' %}" class="btn-seguir">← Seguir comprando</a>
             <a href="{% url 'limpiar_carrito' %}">
                 <button class="btn-vaciar">🗑 Vaciar carrito</button>
             </a>
             {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'realizar_compra' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-comprar">✅ Realizar compra</button>
-                </form>
+                {% if tienda_abierta %}
+                    <form method="POST" action="{% url 'realizar_compra' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-comprar">✅ Realizar compra</button>
+                    </form>
+                {% else %}
+                    <button class="btn-comprar" disabled>🔒 Tienda cerrada</button>
+                {% endif %}
             {% else %}
                 <a href="{% url 'login' %}" class="btn-comprar" style="text-decoration:none; display:inline-block;">
                     Iniciar sesión para comprar
