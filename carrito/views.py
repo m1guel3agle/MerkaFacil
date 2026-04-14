@@ -1,4 +1,5 @@
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .carrito import Carrito
 from .models import Pedido, ItemPedido
@@ -10,6 +11,7 @@ def agregar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = get_object_or_404(Producto, id=producto_id)
     carrito.agregar(producto)
+    messages.success(request, f'add|{producto.nombre}')
     return redirect(request.META.get("HTTP_REFERER", "catalogo"))
 
 
@@ -17,19 +19,23 @@ def restar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = get_object_or_404(Producto, id=producto_id)
     carrito.restar(producto)
+    messages.info(request, f'sub|{producto.nombre}')
     return redirect("carrito")
 
 
 def eliminar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = get_object_or_404(Producto, id=producto_id)
+    nombre = producto.nombre
     carrito.eliminar(producto)
+    messages.warning(request, f'del|{nombre}')
     return redirect("carrito")
 
 
 def limpiar_carrito(request):
     carrito = Carrito(request)
     carrito.limpiar()
+    messages.warning(request, 'clear|')
     return redirect("carrito")
 
 
@@ -80,6 +86,7 @@ def realizar_compra(request):
             )
 
         carrito.limpiar()
+        messages.success(request, f'order|{pedido.id}')
         return redirect("confirmacion_pedido", pedido_id=pedido.id)
 
     return redirect("carrito")

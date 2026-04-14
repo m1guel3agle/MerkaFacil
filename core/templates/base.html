@@ -1,81 +1,98 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-    <title>Merkafacil</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerkaFácil</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ── Paleta de marca ── */
+        :root {
+            --verde-principal: #2E7D32;
+            --verde-oscuro:    #1B5E20;
+            --verde-claro:     #A5D6A7;
+            --naranja-marca:   #F57C00;
+            --fondo-suave:     #F9FBF7;
+            --texto-oscuro:    #1B1B1B;
+            --gris-medio:      #757575;
+        }
 
+        /* ── Base ── */
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Nunito', sans-serif;
+            background: var(--fondo-suave);
+            color: var(--texto-oscuro);
         }
 
+        /* ── Navbar ── */
         .navbar {
-            background: #222;
-            padding: 12px;
+            background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-principal));
+            padding: 12px 24px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
-        .navbar a {
+        .brand-logo {
             text-decoration: none;
+            margin-right: 16px;
+            line-height: 1.2;
         }
+
+        .brand-logo .brand-name {
+            font-family: 'Fredoka One', cursive;
+            font-size: 26px;
+            color: var(--naranja-marca);
+            display: block;
+        }
+
+        .brand-logo .brand-slogan {
+            font-size: 11px;
+            color: var(--verde-claro);
+            letter-spacing: 0.5px;
+        }
+
+        .navbar a:not(.brand-logo) { text-decoration: none; }
 
         .navbar button {
-            padding: 10px 16px;
+            padding: 8px 14px;
             border: none;
             border-radius: 6px;
-            background: #4CAF50;
+            background: rgba(255,255,255,0.15);
             color: white;
             font-size: 14px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .navbar button:hover {
-            background: #43a047;
-        }
+        .navbar button:hover { background: rgba(255,255,255,0.28); }
 
-        .navbar .user {
-            color: white;
-            margin-left: auto;
-            margin-right: 10px;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        /* ── Carrito badge ── */
         .carrito-btn {
             position: relative;
             display: inline-block;
-            margin-left: auto;   /* empuja el carrito hacia la derecha */
+            margin-left: auto;
         }
 
         .carrito-btn button {
-            background: #FB8C00;  /* naranja para distinguirlo del resto */
+            background: var(--naranja-marca);
         }
 
-        .carrito-btn button:hover {
-            background: #E65100;
-        }
+        .carrito-btn button:hover { background: #E65100; }
 
         .carrito-badge {
             position: absolute;
-            top: -6px;
-            right: -6px;
+            top: -6px; right: -6px;
             background: #e53935;
             color: white;
             border-radius: 50%;
             font-size: 11px;
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,27 +100,226 @@
             pointer-events: none;
         }
 
-    </style>
+        .navbar .user {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            margin-right: 4px;
+        }
 
+        /* ── Contenido ── */
+        .content { padding: 40px; }
+
+        /* ── Footer ── */
+        .footer {
+            background: var(--verde-oscuro);
+            color: white;
+            text-align: center;
+            padding: 28px 24px;
+            margin-top: 60px;
+        }
+
+        .footer .footer-brand {
+            font-family: 'Fredoka One', cursive;
+            font-size: 22px;
+            color: var(--naranja-marca);
+            margin-bottom: 6px;
+        }
+
+        .footer .footer-sub  { font-size: 13px; opacity: 0.7;  margin: 0; }
+        .footer .footer-copy { font-size: 12px; opacity: 0.45; margin-top: 10px; }
+
+        /* ══════════════════════════════
+           TOAST SYSTEM
+           ══════════════════════════════ */
+        #toast-container {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-radius: 14px;
+            min-width: 280px;
+            max-width: 360px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            pointer-events: auto;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            animation: toastIn 0.38s cubic-bezier(.22,1,.36,1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast.hiding {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        /* Barra de progreso */
+        .toast::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.45);
+            border-radius: 0 0 0 14px;
+            animation: toastProgress 3.5s linear forwards;
+        }
+
+        .toast-icon {
+            font-size: 26px;
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        .toast-body { flex: 1; line-height: 1.3; }
+        .toast-title { font-size: 13px; opacity: 0.85; font-weight: 600; margin-bottom: 2px; }
+        .toast-msg   { font-size: 15px; font-weight: 700; }
+
+        /* Colores por tipo */
+        .toast-add   { background: linear-gradient(135deg, #2E7D32, #43a047); }
+        .toast-sub   { background: linear-gradient(135deg, #1565C0, #1976D2); }
+        .toast-del   { background: linear-gradient(135deg, #b71c1c, #e53935); }
+        .toast-clear { background: linear-gradient(135deg, #E65100, #F57C00); }
+        .toast-order { background: linear-gradient(135deg, #4A148C, #7B1FA2); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(60px) scale(0.92); }
+            to   { opacity: 1; transform: translateX(0)    scale(1);    }
+        }
+
+        @keyframes toastOut {
+            to { opacity: 0; transform: translateX(60px) scale(0.9); }
+        }
+
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to   { width: 0%;   }
+        }
+
+        /* ══════════════════════════════
+           MODAL DE CONFIRMACIÓN
+           ══════════════════════════════ */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 8888;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-overlay.active { display: flex; }
+
+        .confirm-modal {
+            background: white;
+            border-radius: 20px;
+            padding: 36px 32px 28px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+            animation: modalIn 0.3s cubic-bezier(.22,1,.36,1);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.88) translateY(20px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);     }
+        }
+
+        .confirm-icon {
+            font-size: 52px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .confirm-modal h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 22px;
+            color: var(--texto-oscuro);
+            margin: 0 0 8px;
+        }
+
+        .confirm-modal p {
+            font-size: 15px;
+            color: var(--gris-medio);
+            margin: 0 0 28px;
+            line-height: 1.5;
+        }
+
+        .confirm-modal p strong {
+            color: var(--texto-oscuro);
+            font-weight: 700;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-confirm-cancel {
+            flex: 1;
+            padding: 11px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: var(--gris-medio);
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-confirm-cancel:hover {
+            border-color: var(--gris-medio);
+            color: var(--texto-oscuro);
+        }
+
+        .btn-confirm-ok {
+            flex: 1;
+            padding: 11px 0;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #b71c1c, #e53935);
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-confirm-ok:hover { opacity: 0.9; transform: scale(1.02); }
+
+    </style>
 </head>
 
 <body>
 
     <div class="navbar">
-
-        <a href="/">
-            <button>Inicio</button>
+        <a href="/" class="brand-logo">
+            <span class="brand-name">🛒 MerkaFácil</span>
+            <span class="brand-slogan">Tu tienda de barrio, en línea</span>
         </a>
 
-        <a href="{% url 'catalogo' %}">
-            <button>Productos</button>
-        </a>
+        <a href="{% url 'catalogo' %}"><button>Productos</button></a>
+        <a href="{% url 'about' %}"><button>Acerca de nosotros</button></a>
 
-        <a href="{% url 'about' %}">
-            <button>Acerca de nosotros</button>
-        </a>
-
-        <!-- Botón carrito con contador -->
         <a href="{% url 'carrito' %}" class="carrito-btn">
             <button>🛒 Carrito</button>
             {% if contador_carrito > 0 %}
@@ -112,41 +328,119 @@
         </a>
 
         {% if user.is_authenticated %}
-
-            <span class="user">
-                Hola {{ user.username }}
-            </span>
-
-            <a href="{% url 'mis_pedidos' %}">
-                <button>📋 Mis pedidos</button>
-            </a>
-
-            <a href="{% url 'logout' %}">
-                <button>Cerrar sesión</button>
-            </a>
-
+            <span class="user">Hola, {{ user.username }}</span>
+            <a href="{% url 'mis_pedidos' %}"><button>📋 Mis pedidos</button></a>
+            <a href="{% url 'logout' %}"><button>Cerrar sesión</button></a>
         {% else %}
-
-            <a href="{% url 'login' %}">
-                <button>Iniciar sesión</button>
-            </a>
-
-            <a href="{% url 'signup' %}">
-                <button>Registrarse</button>
-            </a>
-
+            <a href="{% url 'login' %}"><button>Iniciar sesión</button></a>
+            <a href="{% url 'signup' %}"><button>Registrarse</button></a>
         {% endif %}
-
     </div>
-
 
     <div class="content">
-
-        {% block content %}
-        {% endblock %}
-
+        {% block content %}{% endblock %}
     </div>
 
-</body>
+    <footer class="footer">
+        <p class="footer-brand">🛒 MerkaFácil</p>
+        <p class="footer-sub">Tu tienda de barrio, en línea · Medellín, Colombia</p>
+        <p class="footer-copy">© 2025 MerkaFácil — Todos los derechos reservados</p>
+    </footer>
 
+    <!-- ══ TOAST CONTAINER ══ -->
+    <div id="toast-container"></div>
+
+    <!-- ══ MODAL DE CONFIRMACIÓN ══ -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-modal">
+            <span class="confirm-icon">🗑️</span>
+            <h3>¿Eliminar producto?</h3>
+            <p id="confirmText">¿Estás seguro que quieres eliminar <strong id="confirmNombre"></strong> del carrito?</p>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+                <a id="confirmLink" href="#" style="text-decoration:none; flex:1;">
+                    <button class="btn-confirm-ok" style="width:100%;">Sí, eliminar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ══════════════════════════════
+       TOAST SYSTEM
+       ══════════════════════════════ */
+    const TOAST_CONFIG = {
+        'add':   { cls: 'toast-add',   icon: '🛒', title: '¡Agregado!',         msg: n => `${n} está en tu carrito` },
+        'sub':   { cls: 'toast-sub',   icon: '➖', title: 'Cantidad reducida',   msg: n => `Se quitó una unidad de ${n}` },
+        'del':   { cls: 'toast-del',   icon: '🗑️', title: 'Producto eliminado',  msg: n => `${n} fue removido del carrito` },
+        'clear': { cls: 'toast-clear', icon: '🧹', title: 'Carrito vaciado',     msg: () => 'Tu carrito está vacío ahora' },
+        'order': { cls: 'toast-order', icon: '✅', title: '¡Pedido realizado!',  msg: n => `Tu pedido #${n} fue confirmado` },
+    };
+
+    function showToast(type, nombre) {
+        const cfg = TOAST_CONFIG[type];
+        if (!cfg) return;
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${cfg.cls}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${cfg.icon}</span>
+            <div class="toast-body">
+                <div class="toast-title">${cfg.title}</div>
+                <div class="toast-msg">${cfg.msg(nombre)}</div>
+            </div>
+        `;
+
+        const container = document.getElementById('toast-container');
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('hiding');
+            toast.addEventListener('animationend', () => toast.remove());
+        }, 3500);
+    }
+
+    /* Leer mensajes Django y disparar toasts */
+    document.addEventListener('DOMContentLoaded', () => {
+        const raw = document.getElementById('django-messages');
+        if (!raw) return;
+        const msgs = JSON.parse(raw.textContent || '[]');
+        msgs.forEach(({ text }) => {
+            const [type, nombre] = text.split('|');
+            showToast(type, nombre || '');
+        });
+    });
+
+    /* ══════════════════════════════
+       MODAL DE CONFIRMACIÓN
+       ══════════════════════════════ */
+    function confirmDelete(url, nombre) {
+        document.getElementById('confirmNombre').textContent = nombre;
+        document.getElementById('confirmLink').href = url;
+        document.getElementById('confirmOverlay').classList.add('active');
+    }
+
+    function closeConfirm() {
+        document.getElementById('confirmOverlay').classList.remove('active');
+    }
+
+    /* Cerrar al hacer clic fuera del modal */
+    document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeConfirm();
+    });
+
+    /* Cerrar con Escape */
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeConfirm();
+    });
+    </script>
+
+    <!-- Serializar mensajes Django para el JS -->
+    {% if messages %}
+    <script id="django-messages" type="application/json">
+        [{% for m in messages %}{"text": "{{ m.message }}"}{% if not forloop.last %},{% endif %}{% endfor %}]
+    </script>
+    {% endif %}
+
+</body>
 </html>
