@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from .models import Producto
-from core.models import ConfigTienda
+from .models import Product
+from core.models import StoreConfig
 
-def catalogo(request):
-    productos = Producto.objects.all()
-    tienda = ConfigTienda.get()
-    return render(request, "productos.html", {
-        "productos": productos,
-        "tienda_abierta": tienda.abierta,
-        "mensaje_cierre": tienda.mensaje_cierre,
+
+def catalog(request):
+    products = Product.objects.all()
+    store = StoreConfig.get()
+    return render(request, "products.html", {
+        "products": products,
+        "store_open": store.is_open,
+        "closed_message": store.closed_message,
     })

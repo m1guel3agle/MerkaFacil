@@ -1,18 +1,19 @@
 from django.db import models
 
-class ConfigTienda(models.Model):
-    abierta = models.BooleanField(default=True)
-    mensaje_cierre = models.CharField(
+
+class StoreConfig(models.Model):
+    is_open = models.BooleanField(default=True)
+    closed_message = models.CharField(
         max_length=255,
-        default="La tienda está cerrada en este momento. ¡Vuelve pronto!"
+        default="The store is currently closed. Come back soon!"
     )
 
     class Meta:
-        verbose_name = "Configuración de tienda"
-        verbose_name_plural = "Configuración de tienda"
+        verbose_name = "Store Configuration"
+        verbose_name_plural = "Store Configuration"
 
     def __str__(self):
-        return "Abierta" if self.abierta else "Cerrada"
+        return "Open" if self.is_open else "Closed"
 
     @classmethod
     def get(cls):

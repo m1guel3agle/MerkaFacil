@@ -1,104 +1,104 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .carrito import Carrito
-from .models import Pedido, ItemPedido
-from productos.models import Producto
-from core.models import ConfigTienda
+from .cart import Cart
+from .models import Order, OrderItem
+from productos.models import Product
+from core.models import StoreConfig
 
 
-def agregar_producto(request, producto_id):
-    carrito = Carrito(request)
-    producto = get_object_or_404(Producto, id=producto_id)
-    carrito.agregar(producto)
-    messages.success(request, f'add|{producto.nombre}')
-    return redirect(request.META.get("HTTP_REFERER", "catalogo"))
+def add_product(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.add(product)
+    messages.success(request, f'add|{product.name}')
+    return redirect(request.META.get("HTTP_REFERER", "catalog"))
 
 
-def restar_producto(request, producto_id):
-    carrito = Carrito(request)
-    producto = get_object_or_404(Producto, id=producto_id)
-    carrito.restar(producto)
-    messages.info(request, f'sub|{producto.nombre}')
-    return redirect("carrito")
+def remove_one(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.remove_one(product)
+    messages.info(request, f'sub|{product.name}')
+    return redirect("cart")
 
 
-def eliminar_producto(request, producto_id):
-    carrito = Carrito(request)
-    producto = get_object_or_404(Producto, id=producto_id)
-    nombre = producto.nombre
-    carrito.eliminar(producto)
-    messages.warning(request, f'del|{nombre}')
-    return redirect("carrito")
+def remove_product(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    name = product.name
+    cart.remove(product)
+    messages.warning(request, f'del|{name}')
+    return redirect("cart")
 
 
-def limpiar_carrito(request):
-    carrito = Carrito(request)
-    carrito.limpiar()
+def clear_cart(request):
+    cart = Cart(request)
+    cart.clear()
     messages.warning(request, 'clear|')
-    return redirect("carrito")
+    return redirect("cart")
 
 
-def ver_carrito(request):
-    carrito = Carrito(request)
-    tienda = ConfigTienda.get()
-    return render(request, "carrito/carrito.html", {
-        "carrito": carrito,
-        "total": carrito.total(),
-        "tienda_abierta": tienda.abierta,
-        "mensaje_cierre": tienda.mensaje_cierre,
+def view_cart(request):
+    cart = Cart(request)
+    store = StoreConfig.get()
+    return render(request, "carrito/Cart.html", {
+        "cart": cart,
+        "total": cart.total(),
+        "store_open": store.is_open,
+        "closed_message": store.closed_message,
     })
 
 
 @login_required
-def realizar_compra(request):
+def checkout(request):
     if request.method == "POST":
 
-        tienda = ConfigTienda.get()
-        if not tienda.abierta:
-            carrito = Carrito(request)
-            return render(request, "carrito/carrito.html", {
-                "carrito": carrito,
-                "total": carrito.total(),
-                "tienda_abierta": False,
-                "mensaje_cierre": tienda.mensaje_cierre,
-                "error_compra": tienda.mensaje_cierre,
+        store = StoreConfig.get()
+        if not store.is_open:
+            cart = Cart(request)
+            return render(request, "carrito/Cart.html", {
+                "cart": cart,
+                "total": cart.total(),
+                "store_open": False,
+                "closed_message": store.closed_message,
+                "checkout_error": store.closed_message,
             })
 
-        carrito = Carrito(request)
+        cart = Cart(request)
 
-        if not carrito.carrito:
-            return redirect("carrito")
+        if not cart.cart:
+            return redirect("cart")
 
-        pedido = Pedido.objects.create(
-            usuario=request.user,
-            total=carrito.total(),
+        order = Order.objects.create(
+            user=request.user,
+            total=cart.total(),
         )
 
-        for item in carrito:
-            ItemPedido.objects.create(
-                pedido=pedido,
-                producto_id=item["producto_id"],
-                nombre=item["nombre"],
-                precio=item["precio"],
-                cantidad=item["cantidad"],
-                imagen=item.get("imagen", ""),
+        for item in cart:
+            OrderItem.objects.create(
+                order=order,
+                product_id=item["product_id"],
+                name=item["name"],
+                price=item["price"],
+                quantity=item["quantity"],
+                image=item.get("image", ""),
             )
 
-        carrito.limpiar()
-        messages.success(request, f'order|{pedido.id}')
-        return redirect("confirmacion_pedido", pedido_id=pedido.id)
+        cart.clear()
+        messages.success(request, f'order|{order.id}')
+        return redirect("order_confirmation", order_id=order.id)
 
-    return redirect("carrito")
-
-
-@login_required
-def confirmacion_pedido(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
-    return render(request, "carrito/confirmacion.html", {"pedido": pedido})
+    return redirect("cart")
 
 
 @login_required
-def mis_pedidos(request):
-    pedidos = Pedido.objects.filter(usuario=request.user)
-    return render(request, "carrito/pedidos.html", {"pedidos": pedidos})
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, "carrito/Confirmation.html", {"order": order})
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, "carrito/Orders.html", {"orders": orders})

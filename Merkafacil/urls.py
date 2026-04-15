@@ -25,11 +25,10 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
-    path("productos/", include("productos.urls")),
-    path("carrito/", include("carrito.urls")),
-    path('', include('core.urls')),
-
+    path("products/", include("productos.urls")),
+    path("cart/", include("carrito.urls")),
 ]
+ 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

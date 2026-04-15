@@ -1,16 +1,16 @@
 from django.contrib import admin
-from .models import Pedido, ItemPedido
+from .models import Order, OrderItem
 
 
-class ItemPedidoInline(admin.TabularInline):
-    model = ItemPedido
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
     extra = 0
-    readonly_fields = ('producto_id', 'nombre', 'precio', 'cantidad', 'imagen')
+    readonly_fields = ('product_id', 'name', 'price', 'quantity', 'image')
 
 
-@admin.register(Pedido)
-class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'usuario', 'fecha', 'total', 'estado')
-    list_filter = ('estado',)
-    list_editable = ('estado',)
-    inlines = [ItemPedidoInline]
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'date', 'total', 'status')
+    list_filter = ('status',)
+    list_editable = ('status',)
+    inlines = [OrderItemInline]

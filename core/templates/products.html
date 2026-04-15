@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 10px;
+    }
+
+    h1 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 28px;
+        color: var(--texto-oscuro);
+        margin-bottom: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.22s, box-shadow 0.22s;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.13);
+    }
+
+    .card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        background: #eee;
+    }
+
+    .card-body {
+        padding: 14px 16px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .card h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--texto-oscuro);
+    }
+
+    .price {
+        font-family: 'Fredoka One', cursive;
+        font-size: 20px;
+        color: var(--verde-principal);
+    }
+
+    .stock-ok { font-size: 13px; font-weight: 600; color: #43a047; }
+    .stock-out { font-size: 13px; font-weight: 600; color: #e53935; }
+    .card-footer { padding: 0 16px 16px; }
+
+    .btn-add {
+        display: block;
+        width: 100%;
+        padding: 9px 0;
+        border: none;
+        border-radius: 8px;
+        background: var(--verde-principal);
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .btn-add:hover { background: var(--verde-oscuro); }
+
+    .btn-add.disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    .aviso-cierre {
+        background: #fff3cd;
+        border: 2px solid #f0ad4e;
+        border-radius: 10px;
+        padding: 16px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #7a5500;
+    }
+
+    .aviso-cierre .icono { font-size: 28px; }
+</style>
+
+<div class="container">
+
+    <h1>Catálogo de productos</h1>
+
+    {% if not store_open %}
+    <div class="aviso-cierre">
+        <span class="icono">🔒</span>
+        <span>{{ closed_message }}</span>
+    </div>
+    {% endif %}
+
+    <div class="grid">
+        {% for product in products %}
+        <div class="card">
+
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <div style="width:100%;height:160px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);display:flex;align-items:center;justify-content:center;font-size:48px;">🛒</div>
+            {% endif %}
+
+            <div class="card-body">
+                <h3>{{ product.name }}</h3>
+                <div class="price">$ {{ product.price }}</div>
+                {% if product.stock > 0 %}
+                    <div class="stock-ok">✔ Disponible</div>
+                {% else %}
+                    <div class="stock-out">✖ Sin stock</div>
+                {% endif %}
+            </div>
+
+            <div class="card-footer">
+                {% if product.stock > 0 %}
+                    <a href="{% url 'add' product.id %}" class="btn-add">+ Agregar al carrito</a>
+                {% else %}
+                    <span class="btn-add disabled">Sin stock</span>
+                {% endif %}
+            </div>
+
+        </div>
+        {% empty %}
+            <p>No hay productos disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

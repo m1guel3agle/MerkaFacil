@@ -417,29 +417,29 @@
     <div class="productos-section">
         <div class="section-header">
             <h2 class="section-title">Productos destacados</h2>
-            <a href="{% url 'catalogo' %}" class="ver-todo-link">Ver todo el catálogo →</a>
+            <a href="{% url 'catalog' %}" class="ver-todo-link">Ver todo el catálogo →</a>
         </div>
 
         <div class="productos-scroll-wrap">
             <div class="productos-rail">
 
-                {% for producto in productos_preview %}
+                {% for product in productos_preview %}
                 <div class="prod-card">
 
-                    {% if producto.stock == 0 %}
+                    {% if product.stock == 0 %}
                         <span class="badge-agotado">Agotado</span>
                     {% endif %}
 
-                    {% if producto.imagen %}
-                        <img class="prod-card-img" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                    {% if product.image %}
+                        <img class="prod-card-img" src="{{ product.image.url }}" alt="{{ product.name }}">
                     {% else %}
                         <div class="prod-card-img-placeholder">🛒</div>
                     {% endif %}
 
                     <div class="prod-card-body">
-                        <p class="prod-card-nombre">{{ producto.nombre }}</p>
-                        <p class="prod-card-precio">${{ producto.precio }}</p>
-                        {% if producto.stock > 0 %}
+                        <p class="prod-card-nombre">{{ product.name }}</p>
+                        <p class="prod-card-precio">${{ product.price }}</p>
+                        {% if product.stock > 0 %}
                             <p class="prod-card-stock ok">✔ Disponible</p>
                         {% else %}
                             <p class="prod-card-stock out">✖ Sin stock</p>
@@ -447,8 +447,8 @@
                     </div>
 
                     <div class="prod-card-footer">
-                        {% if producto.stock > 0 %}
-                            <a href="{% url 'agregar' producto.id %}" class="btn-agregar">
+                        {% if product.stock > 0 %}
+                            <a href="{% url 'add' product.id %}" class="btn-agregar">
                                 + Agregar al carrito
                             </a>
                         {% else %}
@@ -465,7 +465,7 @@
 
                 <!-- Tarjeta "ver más" al final del rail -->
                 <div class="prod-card" style="justify-content:center; align-items:center; min-height:260px; background: linear-gradient(135deg, #e8f5e9, #f9fbf7); border: 2px dashed var(--verde-claro);">
-                    <a href="{% url 'catalogo' %}" style="text-decoration:none; text-align:center; padding:20px;">
+                    <a href="{% url 'catalog' %}" style="text-decoration:none; text-align:center; padding:20px;">
                         <div style="font-size:40px; margin-bottom:12px;">🛍️</div>
                         <p style="font-family:'Fredoka One',cursive; font-size:16px; color:var(--verde-principal); margin:0 0 4px;">Ver todo</p>
                         <p style="font-size:12px; color:var(--gris-medio); margin:0;">el catálogo →</p>
@@ -507,7 +507,7 @@
             <div class="banner-copy">
                 <h2>La tienda del barrio, ahora en tu pantalla</h2>
                 <p>Frutas, verduras, snacks y más. Todo fresco, todo fácil.</p>
-                <a href="{% url 'catalogo' %}" class="btn-banner">Ir al catálogo 🛒</a>
+                <a href="{% url 'catalog' %}" class="btn-banner">Ir al catálogo 🛒</a>
             </div>
         </div>
     </div>
@@ -545,7 +545,7 @@
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="equipo-avatar-placeholder" style="display:none;">🎯</div>
                 <p class="equipo-nombre">Samuel Orozco</p>
-                <p class="equipo-rol">Product owner y levantamiento de requerimientos</p>
+                <p class="equipo-rol">Líder del producto y levantamiento de requerimientos</p>
             </div>
 
         </div>

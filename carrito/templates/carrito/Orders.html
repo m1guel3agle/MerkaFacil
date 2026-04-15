@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .orders-container { max-width: 900px; margin: 30px auto; }
+
+    h2 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 28px;
+        color: var(--texto-oscuro);
+        margin-bottom: 24px;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .order-header {
+        background: var(--verde-oscuro);
+        color: white;
+        padding: 14px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .order-header span { font-size: 14px; opacity: 0.8; }
+    .order-header strong { font-size: 16px; }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .status-pending { background: #FFF9C4; color: #F57F17; }
+    .status-processing { background: #E3F2FD; color: #1565C0; }
+    .status-delivered { background: #E8F5E9; color: #2E7D32; }
+    .status-cancelled { background: #FFEBEE; color: #C62828; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+        background: #f5f5f5;
+        padding: 10px 16px;
+        font-size: 13px;
+        color: #666;
+        text-align: left;
+    }
+
+    td { padding: 10px 16px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+
+    .order-total {
+        padding: 12px 20px;
+        text-align: right;
+        font-family: 'Fredoka One', cursive;
+        font-size: 18px;
+        color: var(--verde-principal);
+        background: #fafafa;
+        border-top: 1px solid #eee;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 64px 20px;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .empty-state .empty-icon { font-size: 56px; margin-bottom: 16px; }
+
+    .empty-state h3 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 22px;
+        color: var(--texto-oscuro);
+        margin: 0 0 8px;
+    }
+
+    .empty-state p { color: var(--gris-medio); margin: 0 0 24px; }
+
+    .btn-catalog {
+        display: inline-block;
+        background: var(--naranja-marca);
+        color: white;
+        padding: 11px 26px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        transition: opacity 0.2s;
+    }
+
+    .btn-catalog:hover { opacity: 0.85; }
+</style>
+
+<div class="orders-container">
+    <h2>📋 Mis pedidos</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <strong>Pedido #{{ order.id }}</strong>
+                    <span>· {{ order.date|date:"d/m/Y H:i" }}</span>
+                </div>
+                <span class="status-badge status-{{ order.status }}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio unitario</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>${{ item.price|floatformat:0 }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.subtotal|floatformat:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="order-total">Total: ${{ order.total|floatformat:0 }}</div>
+        </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>Aún no tienes pedidos</h3>
+            <p>Todavía no has realizado compras. Explora el catálogo para empezar.</p>
+            <a href="{% url 'catalog' %}" class="btn-catalog">🛍️ Ver productos</a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -8,18 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ── Paleta de marca ── */
         :root {
             --verde-principal: #2E7D32;
-            --verde-oscuro:    #1B5E20;
-            --verde-claro:     #A5D6A7;
-            --naranja-marca:   #F57C00;
-            --fondo-suave:     #F9FBF7;
-            --texto-oscuro:    #1B1B1B;
-            --gris-medio:      #757575;
+            --verde-oscuro: #1B5E20;
+            --verde-claro: #A5D6A7;
+            --naranja-marca: #F57C00;
+            --fondo-suave: #F9FBF7;
+            --texto-oscuro: #1B1B1B;
+            --gris-medio: #757575;
         }
 
-        /* ── Base ── */
         body {
             margin: 0;
             font-family: 'Nunito', sans-serif;
@@ -27,7 +25,6 @@
             color: var(--texto-oscuro);
         }
 
-        /* ── Navbar ── */
         .navbar {
             background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-principal));
             padding: 12px 24px;
@@ -37,24 +34,9 @@
             flex-wrap: wrap;
         }
 
-        .brand-logo {
-            text-decoration: none;
-            margin-right: 16px;
-            line-height: 1.2;
-        }
-
-        .brand-logo .brand-name {
-            font-family: 'Fredoka One', cursive;
-            font-size: 26px;
-            color: var(--naranja-marca);
-            display: block;
-        }
-
-        .brand-logo .brand-slogan {
-            font-size: 11px;
-            color: var(--verde-claro);
-            letter-spacing: 0.5px;
-        }
+        .brand-logo { text-decoration: none; margin-right: 16px; line-height: 1.2; }
+        .brand-logo .brand-name { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--naranja-marca); display: block; }
+        .brand-logo .brand-slogan { font-size: 11px; color: var(--verde-claro); letter-spacing: 0.5px; }
 
         .navbar a:not(.brand-logo) { text-decoration: none; }
 
@@ -73,26 +55,20 @@
 
         .navbar button:hover { background: rgba(255,255,255,0.28); }
 
-        .carrito-btn {
-            position: relative;
-            display: inline-block;
-            margin-left: auto;
-        }
-
-        .carrito-btn button {
-            background: var(--naranja-marca);
-        }
-
+        .carrito-btn { position: relative; display: inline-block; margin-left: auto; }
+        .carrito-btn button { background: var(--naranja-marca); }
         .carrito-btn button:hover { background: #E65100; }
 
         .carrito-badge {
             position: absolute;
-            top: -6px; right: -6px;
+            top: -6px;
+            right: -6px;
             background: #e53935;
             color: white;
             border-radius: 50%;
             font-size: 11px;
-            width: 18px; height: 18px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -100,38 +76,14 @@
             pointer-events: none;
         }
 
-        .navbar .user {
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            margin-right: 4px;
-        }
-
-        /* ── Contenido ── */
+        .navbar .user { color: white; font-weight: 600; font-size: 14px; margin-right: 4px; }
         .content { padding: 40px; }
 
-        /* ── Footer ── */
-        .footer {
-            background: var(--verde-oscuro);
-            color: white;
-            text-align: center;
-            padding: 28px 24px;
-            margin-top: 60px;
-        }
-
-        .footer .footer-brand {
-            font-family: 'Fredoka One', cursive;
-            font-size: 22px;
-            color: var(--naranja-marca);
-            margin-bottom: 6px;
-        }
-
-        .footer .footer-sub  { font-size: 13px; opacity: 0.7;  margin: 0; }
+        .footer { background: var(--verde-oscuro); color: white; text-align: center; padding: 28px 24px; margin-top: 60px; }
+        .footer .footer-brand { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--naranja-marca); margin-bottom: 6px; }
+        .footer .footer-sub { font-size: 13px; opacity: 0.7; margin: 0; }
         .footer .footer-copy { font-size: 12px; opacity: 0.45; margin-top: 10px; }
 
-        /* ══════════════════════════════
-           TOAST SYSTEM
-           ══════════════════════════════ */
         #toast-container {
             position: fixed;
             bottom: 28px;
@@ -162,41 +114,32 @@
             overflow: hidden;
         }
 
-        .toast.hiding {
-            animation: toastOut 0.3s ease forwards;
-        }
+        .toast.hiding { animation: toastOut 0.3s ease forwards; }
 
-        /* Barra de progreso */
         .toast::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
+            bottom: 0;
+            left: 0;
             height: 3px;
             background: rgba(255,255,255,0.45);
             border-radius: 0 0 0 14px;
             animation: toastProgress 3.5s linear forwards;
         }
 
-        .toast-icon {
-            font-size: 26px;
-            flex-shrink: 0;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-        }
-
+        .toast-icon { font-size: 26px; flex-shrink: 0; }
         .toast-body { flex: 1; line-height: 1.3; }
         .toast-title { font-size: 13px; opacity: 0.85; font-weight: 600; margin-bottom: 2px; }
-        .toast-msg   { font-size: 15px; font-weight: 700; }
-
-        /* Colores por tipo */
-        .toast-add   { background: linear-gradient(135deg, #2E7D32, #43a047); }
-        .toast-sub   { background: linear-gradient(135deg, #1565C0, #1976D2); }
-        .toast-del   { background: linear-gradient(135deg, #b71c1c, #e53935); }
+        .toast-msg { font-size: 15px; font-weight: 700; }
+        .toast-add { background: linear-gradient(135deg, #2E7D32, #43a047); }
+        .toast-sub { background: linear-gradient(135deg, #1565C0, #1976D2); }
+        .toast-del { background: linear-gradient(135deg, #b71c1c, #e53935); }
         .toast-clear { background: linear-gradient(135deg, #E65100, #F57C00); }
         .toast-order { background: linear-gradient(135deg, #4A148C, #7B1FA2); }
 
         @keyframes toastIn {
             from { opacity: 0; transform: translateX(60px) scale(0.92); }
-            to   { opacity: 1; transform: translateX(0)    scale(1);    }
+            to { opacity: 1; transform: translateX(0) scale(1); }
         }
 
         @keyframes toastOut {
@@ -205,12 +148,9 @@
 
         @keyframes toastProgress {
             from { width: 100%; }
-            to   { width: 0%;   }
+            to { width: 0%; }
         }
 
-        /* ══════════════════════════════
-           MODAL DE CONFIRMACIÓN
-           ══════════════════════════════ */
         .confirm-overlay {
             display: none;
             position: fixed;
@@ -237,39 +177,14 @@
 
         @keyframes modalIn {
             from { opacity: 0; transform: scale(0.88) translateY(20px); }
-            to   { opacity: 1; transform: scale(1)    translateY(0);     }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .confirm-icon {
-            font-size: 52px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .confirm-modal h3 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 22px;
-            color: var(--texto-oscuro);
-            margin: 0 0 8px;
-        }
-
-        .confirm-modal p {
-            font-size: 15px;
-            color: var(--gris-medio);
-            margin: 0 0 28px;
-            line-height: 1.5;
-        }
-
-        .confirm-modal p strong {
-            color: var(--texto-oscuro);
-            font-weight: 700;
-        }
-
-        .confirm-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
+        .confirm-icon { font-size: 52px; margin-bottom: 12px; display: block; }
+        .confirm-modal h3 { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--texto-oscuro); margin: 0 0 8px; }
+        .confirm-modal p { font-size: 15px; color: var(--gris-medio); margin: 0 0 28px; line-height: 1.5; }
+        .confirm-modal p strong { color: var(--texto-oscuro); font-weight: 700; }
+        .confirm-actions { display: flex; gap: 12px; justify-content: center; }
 
         .btn-confirm-cancel {
             flex: 1;
@@ -285,10 +200,7 @@
             transition: border-color 0.2s, color 0.2s;
         }
 
-        .btn-confirm-cancel:hover {
-            border-color: var(--gris-medio);
-            color: var(--texto-oscuro);
-        }
+        .btn-confirm-cancel:hover { border-color: var(--gris-medio); color: var(--texto-oscuro); }
 
         .btn-confirm-ok {
             flex: 1;
@@ -305,7 +217,6 @@
         }
 
         .btn-confirm-ok:hover { opacity: 0.9; transform: scale(1.02); }
-
     </style>
 </head>
 
@@ -317,22 +228,22 @@
             <span class="brand-slogan">Tu tienda de barrio, en línea</span>
         </a>
 
-        <a href="{% url 'catalogo' %}"><button>Productos</button></a>
-        <a href="{% url 'about' %}"><button>Acerca de nosotros</button></a>
+        <a href="{% url 'catalog' %}"><button>Productos</button></a>
+        <a href="{% url 'about' %}"><button>Nosotros</button></a>
 
-        <a href="{% url 'carrito' %}" class="carrito-btn">
+        <a href="{% url 'cart' %}" class="carrito-btn">
             <button>🛒 Carrito</button>
-            {% if contador_carrito > 0 %}
-                <span class="carrito-badge">{{ contador_carrito }}</span>
+            {% if cart_count > 0 %}
+                <span class="carrito-badge">{{ cart_count }}</span>
             {% endif %}
         </a>
 
         {% if user.is_authenticated %}
             <span class="user">Hola, {{ user.username }}</span>
-            <a href="{% url 'mis_pedidos' %}"><button>📋 Mis pedidos</button></a>
+            <a href="{% url 'my_orders' %}"><button>📋 Mis pedidos</button></a>
             <a href="{% url 'logout' %}"><button>Cerrar sesión</button></a>
         {% else %}
-            <a href="{% url 'login' %}"><button>Iniciar sesión</button></a>
+            <a href="{% url 'login' %}"><button>Ingresar</button></a>
             <a href="{% url 'signup' %}"><button>Registrarse</button></a>
         {% endif %}
     </div>
@@ -344,18 +255,16 @@
     <footer class="footer">
         <p class="footer-brand">🛒 MerkaFácil</p>
         <p class="footer-sub">Tu tienda de barrio, en línea · Medellín, Colombia</p>
-        <p class="footer-copy">© 2025 MerkaFácil — Todos los derechos reservados</p>
+        <p class="footer-copy">© 2025 MerkaFácil · Todos los derechos reservados</p>
     </footer>
 
-    <!-- ══ TOAST CONTAINER ══ -->
     <div id="toast-container"></div>
 
-    <!-- ══ MODAL DE CONFIRMACIÓN ══ -->
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-modal">
             <span class="confirm-icon">🗑️</span>
             <h3>¿Eliminar producto?</h3>
-            <p id="confirmText">¿Estás seguro que quieres eliminar <strong id="confirmNombre"></strong> del carrito?</p>
+            <p>¿Seguro que quieres eliminar <strong id="confirmName"></strong> de tu carrito?</p>
             <div class="confirm-actions">
                 <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
                 <a id="confirmLink" href="#" style="text-decoration:none; flex:1;">
@@ -366,56 +275,43 @@
     </div>
 
     <script>
-    /* ══════════════════════════════
-       TOAST SYSTEM
-       ══════════════════════════════ */
     const TOAST_CONFIG = {
-        'add':   { cls: 'toast-add',   icon: '🛒', title: '¡Agregado!',         msg: n => `${n} está en tu carrito` },
-        'sub':   { cls: 'toast-sub',   icon: '➖', title: 'Cantidad reducida',   msg: n => `Se quitó una unidad de ${n}` },
-        'del':   { cls: 'toast-del',   icon: '🗑️', title: 'Producto eliminado',  msg: n => `${n} fue removido del carrito` },
-        'clear': { cls: 'toast-clear', icon: '🧹', title: 'Carrito vaciado',     msg: () => 'Tu carrito está vacío ahora' },
-        'order': { cls: 'toast-order', icon: '✅', title: '¡Pedido realizado!',  msg: n => `Tu pedido #${n} fue confirmado` },
+        'add':   { cls: 'toast-add',   icon: '🛒', title: 'Agregado', msg: n => `${n} ahora está en tu carrito` },
+        'sub':   { cls: 'toast-sub',   icon: '➖', title: 'Cantidad reducida', msg: n => `Se quitó una unidad de ${n}` },
+        'del':   { cls: 'toast-del',   icon: '🗑️', title: 'Producto eliminado', msg: n => `${n} fue eliminado de tu carrito` },
+        'clear': { cls: 'toast-clear', icon: '🧹', title: 'Carrito vaciado', msg: () => 'Tu carrito quedó vacío' },
+        'order': { cls: 'toast-order', icon: '✅', title: 'Pedido realizado', msg: n => `Tu pedido #${n} fue confirmado` },
     };
 
-    function showToast(type, nombre) {
+    function showToast(type, name) {
         const cfg = TOAST_CONFIG[type];
         if (!cfg) return;
-
         const toast = document.createElement('div');
         toast.className = `toast ${cfg.cls}`;
         toast.innerHTML = `
             <span class="toast-icon">${cfg.icon}</span>
             <div class="toast-body">
                 <div class="toast-title">${cfg.title}</div>
-                <div class="toast-msg">${cfg.msg(nombre)}</div>
-            </div>
-        `;
-
-        const container = document.getElementById('toast-container');
-        container.appendChild(toast);
-
+                <div class="toast-msg">${cfg.msg(name)}</div>
+            </div>`;
+        document.getElementById('toast-container').appendChild(toast);
         setTimeout(() => {
             toast.classList.add('hiding');
             toast.addEventListener('animationend', () => toast.remove());
         }, 3500);
     }
 
-    /* Leer mensajes Django y disparar toasts */
     document.addEventListener('DOMContentLoaded', () => {
         const raw = document.getElementById('django-messages');
         if (!raw) return;
-        const msgs = JSON.parse(raw.textContent || '[]');
-        msgs.forEach(({ text }) => {
-            const [type, nombre] = text.split('|');
-            showToast(type, nombre || '');
+        JSON.parse(raw.textContent || '[]').forEach(({ text }) => {
+            const [type, name] = text.split('|');
+            showToast(type, name || '');
         });
     });
 
-    /* ══════════════════════════════
-       MODAL DE CONFIRMACIÓN
-       ══════════════════════════════ */
-    function confirmDelete(url, nombre) {
-        document.getElementById('confirmNombre').textContent = nombre;
+    function confirmDelete(url, name) {
+        document.getElementById('confirmName').textContent = name;
         document.getElementById('confirmLink').href = url;
         document.getElementById('confirmOverlay').classList.add('active');
     }
@@ -424,18 +320,13 @@
         document.getElementById('confirmOverlay').classList.remove('active');
     }
 
-    /* Cerrar al hacer clic fuera del modal */
     document.getElementById('confirmOverlay').addEventListener('click', function(e) {
         if (e.target === this) closeConfirm();
     });
 
-    /* Cerrar con Escape */
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeConfirm();
-    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeConfirm(); });
     </script>
 
-    <!-- Serializar mensajes Django para el JS -->
     {% if messages %}
     <script id="django-messages" type="application/json">
         [{% for m in messages %}{"text": "{{ m.message }}"}{% if not forloop.last %},{% endif %}{% endfor %}]

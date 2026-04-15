@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .cart-wrap {
+        max-width: 1100px;
+        margin: 30px auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    .cart-main,
+    .cart-summary,
+    .empty-cart {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .cart-main {
+        padding: 26px;
+    }
+
+    .cart-summary {
+        padding: 24px;
+        position: sticky;
+        top: 24px;
+    }
+
+    .cart-title {
+        font-family: 'Fredoka One', cursive;
+        font-size: 32px;
+        margin: 0 0 8px;
+        color: var(--texto-oscuro);
+    }
+
+    .cart-subtitle {
+        margin: 0 0 22px;
+        color: var(--gris-medio);
+        font-size: 15px;
+    }
+
+    .store-alert {
+        background: #fff3cd;
+        border: 2px solid #f0ad4e;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #7a5500;
+        font-weight: 700;
+    }
+
+    .checkout-error {
+        background: #fdecea;
+        border: 2px solid #e57373;
+        color: #b71c1c;
+    }
+
+    .cart-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        border: 1px solid #edf2ea;
+        border-radius: 16px;
+        padding: 14px;
+    }
+
+    .cart-item-image {
+        width: 110px;
+        height: 110px;
+        border-radius: 14px;
+        object-fit: cover;
+        background: #f1f4ef;
+    }
+
+    .cart-item-placeholder {
+        width: 110px;
+        height: 110px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        font-size: 34px;
+    }
+
+    .cart-item-name {
+        margin: 0 0 6px;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--texto-oscuro);
+    }
+
+    .cart-item-meta {
+        margin: 0;
+        color: var(--gris-medio);
+        font-size: 14px;
+    }
+
+    .cart-item-subtotal {
+        margin-top: 10px;
+        font-family: 'Fredoka One', cursive;
+        color: var(--verde-principal);
+        font-size: 24px;
+    }
+
+    .cart-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+        min-width: 120px;
+    }
+
+    .qty-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .qty-btn,
+    .remove-btn,
+    .action-btn,
+    .checkout-btn,
+    .browse-btn {
+        border: none;
+        border-radius: 10px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .qty-btn {
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef5ec;
+        color: var(--verde-oscuro);
+        font-size: 18px;
+    }
+
+    .qty-value {
+        min-width: 28px;
+        text-align: center;
+        font-weight: 800;
+        color: var(--texto-oscuro);
+    }
+
+    .remove-btn {
+        padding: 9px 12px;
+        background: #ffebee;
+        color: #c62828;
+        font-size: 14px;
+    }
+
+    .summary-title {
+        font-family: 'Fredoka One', cursive;
+        font-size: 24px;
+        margin: 0 0 18px;
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 10px;
+        color: var(--gris-medio);
+        font-weight: 700;
+    }
+
+    .summary-total {
+        margin: 18px 0 20px;
+        padding-top: 16px;
+        border-top: 1px solid #ececec;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .summary-total span:first-child {
+        font-weight: 800;
+        color: var(--texto-oscuro);
+    }
+
+    .summary-total span:last-child {
+        font-family: 'Fredoka One', cursive;
+        color: var(--verde-principal);
+        font-size: 28px;
+    }
+
+    .action-btn,
+    .checkout-btn,
+    .browse-btn {
+        display: block;
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 15px;
+    }
+
+    .checkout-btn {
+        background: var(--naranja-marca);
+        color: white;
+    }
+
+    .checkout-btn.disabled {
+        background: #d7d7d7;
+        color: #6c6c6c;
+        cursor: not-allowed;
+    }
+
+    .action-btn {
+        background: #eef5ec;
+        color: var(--verde-oscuro);
+        margin-top: 10px;
+    }
+
+    .browse-btn {
+        background: white;
+        color: var(--verde-principal);
+        border: 2px solid var(--verde-claro);
+    }
+
+    .summary-note {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--gris-medio);
+        line-height: 1.45;
+    }
+
+    .empty-cart {
+        max-width: 760px;
+        margin: 40px auto;
+        padding: 48px 30px;
+        text-align: center;
+    }
+
+    .empty-cart-icon {
+        font-size: 60px;
+        margin-bottom: 12px;
+    }
+
+    .empty-cart h1 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 32px;
+        margin: 0 0 10px;
+    }
+
+    .empty-cart p {
+        color: var(--gris-medio);
+        font-size: 16px;
+        margin: 0 0 24px;
+    }
+
+    @media (max-width: 900px) {
+        .cart-wrap {
+            grid-template-columns: 1fr;
+        }
+
+        .cart-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 680px) {
+        .cart-item {
+            grid-template-columns: 1fr;
+        }
+
+        .cart-item-image,
+        .cart-item-placeholder {
+            width: 100%;
+            height: 190px;
+        }
+
+        .cart-actions {
+            min-width: 0;
+        }
+    }
+</style>
+
+{% if cart.cart %}
+<div class="cart-wrap">
+    <section class="cart-main">
+        <h1 class="cart-title">Tu carrito</h1>
+        <p class="cart-subtitle">Revisa los productos que has agregado antes de confirmar tu pedido.</p>
+
+        {% if not store_open %}
+        <div class="store-alert">
+            <span>🔒</span>
+            <span>{{ closed_message }}</span>
+        </div>
+        {% endif %}
+
+        {% if checkout_error %}
+        <div class="store-alert checkout-error">
+            <span>⚠️</span>
+            <span>{{ checkout_error }}</span>
+        </div>
+        {% endif %}
+
+        <div class="cart-list">
+            {% for item in cart %}
+            <article class="cart-item">
+                {% if item.image %}
+                    <img src="{{ item.image }}" alt="{{ item.name }}" class="cart-item-image">
+                {% else %}
+                    <div class="cart-item-placeholder">🛒</div>
+                {% endif %}
+
+                <div>
+                    <h2 class="cart-item-name">{{ item.name }}</h2>
+                    <p class="cart-item-meta">Precio unitario: ${{ item.price|floatformat:0 }}</p>
+                    <div class="cart-item-subtotal">${{ item.subtotal|floatformat:0 }}</div>
+                </div>
+
+                <div class="cart-actions">
+                    <div class="qty-row">
+                        <a href="{% url 'remove_one' item.product_id %}" class="qty-btn">-</a>
+                        <span class="qty-value">{{ item.quantity }}</span>
+                        <a href="{% url 'add' item.product_id %}" class="qty-btn">+</a>
+                    </div>
+                    <a href="{% url 'remove' item.product_id %}" class="remove-btn">Eliminar</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <aside class="cart-summary">
+        <h2 class="summary-title">Resumen</h2>
+        <div class="summary-line">
+            <span>Productos</span>
+            <span>{{ cart.total_items }}</span>
+        </div>
+        <div class="summary-line">
+            <span>Estado de la tienda</span>
+            <span>{% if store_open %}Abierta{% else %}Cerrada{% endif %}</span>
+        </div>
+        <div class="summary-total">
+            <span>Total</span>
+            <span>${{ total|floatformat:0 }}</span>
+        </div>
+
+        {% if user.is_authenticated %}
+            {% if store_open %}
+            <form method="post" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                <button type="submit" class="checkout-btn">Confirmar pedido</button>
+            </form>
+            {% else %}
+                <button type="button" class="checkout-btn disabled">Tienda cerrada</button>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="checkout-btn">Ingresa para comprar</a>
+        {% endif %}
+
+        <a href="{% url 'clear_cart' %}" class="action-btn">Vaciar carrito</a>
+        <a href="{% url 'catalog' %}" class="browse-btn">Seguir comprando</a>
+
+        <p class="summary-note">
+            Puedes modificar cantidades o eliminar productos antes de finalizar tu compra.
+        </p>
+    </aside>
+</div>
+{% else %}
+<div class="empty-cart">
+    <div class="empty-cart-icon">🛒</div>
+    <h1>Tu carrito está vacío</h1>
+    <p>Aún no has agregado productos. Explora el catálogo y añade lo que necesites.</p>
+    <a href="{% url 'catalog' %}" class="browse-btn" style="max-width: 260px; margin: 0 auto;">Ver productos</a>
+</div>
+{% endif %}
+
+{% endblock %}
