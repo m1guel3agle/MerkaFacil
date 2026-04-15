@@ -68,7 +68,7 @@ MerkaFacil/
 │   ├── admin.py                    # Registro de ConfigTienda
 │   └── migrations/
 │
-├── productos/                      # App: catálogo de productos
+├── products/                       # App: catálogo de productos
 │   ├── models.py                   # Producto (nombre, precio, stock, imagen)
 │   ├── views.py                    # catalogo
 │   ├── urls.py

@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .cart import Cart
 from .models import Order, OrderItem
-from productos.models import Product
+from products.models import Product
 from core.models import StoreConfig
 
 
