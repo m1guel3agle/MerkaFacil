@@ -10,10 +10,22 @@ class Order(models.Model):
         ("cancelled", "Cancelado"),
     ]
 
+    DELIVERY_CHOICES = [
+        ("pickup", "Recoger en la tienda"),
+        ("delivery", "Delivery"),
+    ]
+
+    PAYMENT_CHOICES = [
+        ("cash", "Efectivo"),
+        ("card", "Tarjeta"),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     date = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=0)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    delivery_method = models.CharField(max_length=20, choices=DELIVERY_CHOICES, null=True, blank=True)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, null=True, blank=True)
 
     class Meta:
         ordering = ["-date"]

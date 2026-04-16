@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .delivery-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .delivery-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+
+    .delivery-title {
+        font-family: 'Fredoka One', cursive;
+        color: var(--texto-oscuro);
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .delivery-subtitle {
+        color: var(--gris-medio);
+        font-size: 15px;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .delivery-options {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .delivery-option {
+        position: relative;
+    }
+
+    .delivery-option input[type="radio"] {
+        display: none;
+    }
+
+    .delivery-option-label {
+        display: block;
+        padding: 20px;
+        border: 2px solid #edf2ea;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .delivery-option input[type="radio"]:checked + .delivery-option-label {
+        border-color: var(--verde-principal);
+        background: #f0fded;
+    }
+
+    .delivery-option-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .delivery-option-icon {
+        font-size: 28px;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .delivery-option-text h3 {
+        margin: 0 0 6px;
+        font-family: 'Fredoka One', cursive;
+        color: var(--texto-oscuro);
+        font-size: 18px;
+    }
+
+    .delivery-option-text p {
+        margin: 0;
+        color: var(--gris-medio);
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .delivery-cost {
+        margin-top: 6px;
+        color: var(--verde-principal);
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .order-summary {
+        background: #f9faf7;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 24px;
+        border: 1px solid #edf2ea;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 10px;
+        color: var(--gris-medio);
+        font-size: 14px;
+    }
+
+    .summary-row:last-child {
+        margin-bottom: 0;
+        padding-top: 10px;
+        border-top: 1px solid #edf2ea;
+        color: var(--texto-oscuro);
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .delivery-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-confirm,
+    .btn-back {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: opacity 0.2s;
+    }
+
+    .btn-confirm {
+        background: var(--naranja-marca);
+        color: white;
+    }
+
+    .btn-confirm:hover {
+        opacity: 0.85;
+    }
+
+    .btn-confirm:disabled {
+        background: #d7d7d7;
+        color: #6c6c6c;
+        cursor: not-allowed;
+    }
+
+    .btn-back {
+        background: white;
+        color: var(--verde-principal);
+        border: 2px solid var(--verde-claro);
+    }
+
+    .btn-back:hover {
+        opacity: 0.85;
+    }
+
+    @media (max-width: 680px) {
+        .delivery-container {
+            margin: 20px;
+            padding: 24px;
+        }
+
+        .delivery-title {
+            font-size: 24px;
+        }
+
+        .delivery-option-label {
+            padding: 16px;
+        }
+
+        .btn-confirm,
+        .btn-back {
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="delivery-container">
+    <div class="delivery-icon">🚚</div>
+    <h2 class="delivery-title">¿Cómo recibirás tu pedido?</h2>
+    <p class="delivery-subtitle">Selecciona la opción que prefieres para recibir tu compra.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="delivery-options">
+            <!-- Opción: Recoger en la tienda -->
+            <div class="delivery-option">
+                <input type="radio" id="pickup" name="delivery_method" value="pickup" required>
+                <label for="pickup" class="delivery-option-label">
+                    <div class="delivery-option-content">
+                        <div class="delivery-option-icon">🏪</div>
+                        <div class="delivery-option-text">
+                            <h3>Recoger en la tienda</h3>
+                            <p>Retira tu pedido en nuestro local. Te notificaremos cuando esté listo.</p>
+                            <div class="delivery-cost">Sin costo adicional</div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Opción: Delivery a domicilio -->
+            <div class="delivery-option">
+                <input type="radio" id="delivery" name="delivery_method" value="delivery" required>
+                <label for="delivery" class="delivery-option-label">
+                    <div class="delivery-option-content">
+                        <div class="delivery-option-icon">🚗</div>
+                        <div class="delivery-option-text">
+                            <h3>Delivery a domicilio</h3>
+                            <p>Recibirás tu pedido en la dirección que indiques.</p>
+                            <div class="delivery-cost">+ $5.000 por costo de envío</div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>${{ order.total|floatformat:0 }}</span>
+            </div>
+            <div class="summary-row" id="delivery-cost-row" style="display: none;">
+                <span>Costo de envío</span>
+                <span>$5.000</span>
+            </div>
+            <div class="summary-row">
+                <span>Total</span>
+                <span id="total-amount">${{ order.total|floatformat:0 }}</span>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="delivery-actions">
+            <a href="{% url 'cart' %}" class="btn-back">← Volver al carrito</a>
+            <button type="submit" class="btn-confirm" id="confirm-btn" disabled>Continuar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const subtotal = parseFloat('{{ order.total }}');
+    const deliveryFeeRow = document.getElementById('delivery-cost-row');
+    const totalAmount = document.getElementById('total-amount');
+    const confirmBtn = document.getElementById('confirm-btn');
+    const pickupOption = document.getElementById('pickup');
+    const deliveryOption = document.getElementById('delivery');
+
+    function updateTotal() {
+        if (deliveryOption.checked) {
+            deliveryFeeRow.style.display = 'flex';
+            const total = subtotal + 5000;
+            totalAmount.textContent = '$' + total.toLocaleString('es-CO');
+        } else {
+            deliveryFeeRow.style.display = 'none';
+            totalAmount.textContent = '$' + subtotal.toLocaleString('es-CO');
+        }
+        // Habilitar botón si hay opción seleccionada
+        confirmBtn.disabled = !pickupOption.checked && !deliveryOption.checked;
+    }
+
+    pickupOption.addEventListener('change', updateTotal);
+    deliveryOption.addEventListener('change', updateTotal);
+</script>
+
+{% endblock %}

@@ -362,9 +362,9 @@
 
         {% if user.is_authenticated %}
             {% if store_open %}
-            <form method="post" action="{% url 'checkout' %}">
+            <form id="checkout-form" method="post" action="{% url 'checkout' %}">
                 {% csrf_token %}
-                <button type="submit" class="checkout-btn">Confirmar pedido</button>
+                <button type="submit" class="checkout-btn" id="checkout-btn">Confirmar pedido</button>
             </form>
             {% else %}
                 <button type="button" class="checkout-btn disabled">Tienda cerrada</button>

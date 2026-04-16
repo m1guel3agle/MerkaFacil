@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from .cart import Cart
 from .models import Order, OrderItem
 from products.models import Product
@@ -52,6 +53,7 @@ def view_cart(request):
 
 @login_required
 def checkout(request):
+    """Primera etapa: crear la orden y redirigir a selección de entrega"""
     if request.method == "POST":
 
         store = StoreConfig.get()
@@ -86,10 +88,64 @@ def checkout(request):
             )
 
         cart.clear()
-        messages.success(request, f'order|{order.id}')
-        return redirect("order_confirmation", order_id=order.id)
+        # Redirigir a selección de método de entrega
+        return redirect("select_delivery", order_id=order.id)
 
     return redirect("cart")
+
+
+@login_required
+# FR-4: Seleccionar método de entrega
+def select_delivery(request, order_id):
+    """Seleccionar método de entrega: delivery o pickup"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    if request.method == "POST":
+        delivery_method = request.POST.get("delivery_method")
+        
+        if delivery_method not in ["pickup", "delivery"]:
+            return redirect("select_delivery", order_id=order.id)
+        
+        order.delivery_method = delivery_method
+        
+        # Si es delivery, agregar costo de envío (5.000 pesos)
+        if delivery_method == "delivery":
+            order.total += 5000
+        
+        order.save()
+        
+        # Si es delivery, ir a seleccionar método de pago
+        # Si es pickup, ir a confirmación
+        if delivery_method == "delivery":
+            return redirect("select_payment", order_id=order.id)
+        else:
+            return redirect("order_confirmation", order_id=order.id)
+    
+    return render(request, "carrito/SelectDelivery.html", {"order": order})
+
+
+# FR-5: Seleccionar método de pago
+@login_required
+def select_payment(request, order_id):
+    """Seleccionar método de pago: efectivo o tarjeta (solo para delivery)"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # Validar que sea delivery
+    if order.delivery_method != "delivery":
+        return redirect("order_confirmation", order_id=order.id)
+    
+    if request.method == "POST":
+        payment_method = request.POST.get("payment_method")
+        
+        if payment_method not in ["cash", "card"]:
+            return redirect("select_payment", order_id=order.id)
+        
+        order.payment_method = payment_method
+        order.save()
+        
+        return redirect("order_confirmation", order_id=order.id)
+    
+    return render(request, "carrito/SelectPayment.html", {"order": order})
 
 
 @login_required
