@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.shortcuts import redirect, render
+
 from products.models import Product
 
 
@@ -15,17 +16,24 @@ def about(request):
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST["username"]
+        username = request.POST["username"].strip()
         password = request.POST["password"]
+        username_exists = User.objects.filter(username=username).exists()
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
             return redirect("home")
-        else:
-            return render(request, "login.html", {
-                "error": "Usuario o contraseña incorrectos."
-            })
+
+        error = (
+            "La contraseña es incorrecta."
+            if username_exists else
+            "Ese usuario no está registrado. Primero debes crear una cuenta."
+        )
+        return render(request, "login.html", {
+            "error": error,
+            "username_value": username,
+        })
 
     return render(request, "login.html")
 
@@ -49,7 +57,7 @@ def signup_view(request):
         User.objects.create_user(
             username=username,
             email=email,
-            password=password
+            password=password,
         )
         return redirect("login")
 

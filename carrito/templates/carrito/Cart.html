@@ -373,7 +373,7 @@
             <a href="{% url 'login' %}" class="checkout-btn">Ingresa para comprar</a>
         {% endif %}
 
-        <a href="{% url 'clear_cart' %}" class="action-btn">Vaciar carrito</a>
+        <a href="{% url 'clear_cart' %}" class="action-btn" onclick="return confirmAction({ url: this.href, title: '¿Vaciar carrito?', message: '¿Seguro que quieres eliminar <strong>todos</strong> los productos de tu carrito?', confirmText: 'Sí, vaciar carrito', icon: '🧹', mode: 'warning' });">Vaciar carrito</a>
         <a href="{% url 'catalog' %}" class="browse-btn">Seguir comprando</a>
 
         <p class="summary-note">

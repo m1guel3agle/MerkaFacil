@@ -111,7 +111,7 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="username" class="form-label">Usuario</label>
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Tu nombre de usuario" required autofocus>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Tu nombre de usuario" value="{{ username_value|default:'' }}" required autofocus>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label">Contraseña</label>

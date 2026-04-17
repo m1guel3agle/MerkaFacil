@@ -37,7 +37,6 @@
         .brand-logo { text-decoration: none; margin-right: 16px; line-height: 1.2; }
         .brand-logo .brand-name { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--naranja-marca); display: block; }
         .brand-logo .brand-slogan { font-size: 11px; color: var(--verde-claro); letter-spacing: 0.5px; }
-
         .navbar a:not(.brand-logo) { text-decoration: none; }
 
         .navbar button {
@@ -54,7 +53,6 @@
         }
 
         .navbar button:hover { background: rgba(255,255,255,0.28); }
-
         .carrito-btn { position: relative; display: inline-block; margin-left: auto; }
         .carrito-btn button { background: var(--naranja-marca); }
         .carrito-btn button:hover { background: #E65100; }
@@ -185,6 +183,7 @@
         .confirm-modal p { font-size: 15px; color: var(--gris-medio); margin: 0 0 28px; line-height: 1.5; }
         .confirm-modal p strong { color: var(--texto-oscuro); font-weight: 700; }
         .confirm-actions { display: flex; gap: 12px; justify-content: center; }
+        .confirm-link { text-decoration: none; flex: 1; }
 
         .btn-confirm-cancel {
             flex: 1;
@@ -207,7 +206,6 @@
             padding: 11px 0;
             border: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #b71c1c, #e53935);
             color: white;
             font-family: 'Nunito', sans-serif;
             font-weight: 700;
@@ -216,6 +214,8 @@
             transition: opacity 0.2s, transform 0.15s;
         }
 
+        .confirm-danger { background: linear-gradient(135deg, #b71c1c, #e53935); }
+        .confirm-warning { background: linear-gradient(135deg, #ef6c00, #fb8c00); }
         .btn-confirm-ok:hover { opacity: 0.9; transform: scale(1.02); }
     </style>
 </head>
@@ -241,7 +241,9 @@
         {% if user.is_authenticated %}
             <span class="user">Hola, {{ user.username }}</span>
             <a href="{% url 'my_orders' %}"><button>📋 Mis pedidos</button></a>
-            <a href="{% url 'logout' %}"><button>Cerrar sesión</button></a>
+            <a href="{% url 'logout' %}" onclick="return confirmAction({ url: this.href, title: '¿Cerrar sesión?', message: '¿Seguro que quieres salir de tu cuenta actual?', confirmText: 'Sí, cerrar sesión', icon: '🚪', mode: 'warning' });">
+                <button>Cerrar sesión</button>
+            </a>
         {% else %}
             <a href="{% url 'login' %}"><button>Ingresar</button></a>
             <a href="{% url 'signup' %}"><button>Registrarse</button></a>
@@ -262,13 +264,13 @@
 
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-modal">
-            <span class="confirm-icon">🗑️</span>
-            <h3>¿Eliminar producto?</h3>
-            <p>¿Seguro que quieres eliminar <strong id="confirmName"></strong> de tu carrito?</p>
+            <span class="confirm-icon" id="confirmIcon">🗑️</span>
+            <h3 id="confirmTitle">¿Eliminar producto?</h3>
+            <p id="confirmText">¿Seguro que quieres eliminar <strong id="confirmName"></strong> de tu carrito?</p>
             <div class="confirm-actions">
                 <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
-                <a id="confirmLink" href="#" style="text-decoration:none; flex:1;">
-                    <button class="btn-confirm-ok" style="width:100%;">Sí, eliminar</button>
+                <a id="confirmLink" href="#" class="confirm-link">
+                    <button class="btn-confirm-ok confirm-danger" id="confirmButton" style="width:100%;">Sí, eliminar</button>
                 </a>
             </div>
         </div>
@@ -310,10 +312,29 @@
         });
     });
 
+    function confirmAction({ url, title, message, confirmText, icon, mode = 'danger' }) {
+        document.getElementById('confirmIcon').textContent = icon || '⚠️';
+        document.getElementById('confirmTitle').textContent = title || '¿Estás seguro?';
+        document.getElementById('confirmText').innerHTML = message || 'Confirma si deseas continuar.';
+        document.getElementById('confirmLink').href = url;
+        const confirmButton = document.getElementById('confirmButton');
+        confirmButton.textContent = confirmText || 'Continuar';
+        confirmButton.classList.remove('confirm-danger', 'confirm-warning');
+        confirmButton.classList.add(mode === 'warning' ? 'confirm-warning' : 'confirm-danger');
+        document.getElementById('confirmOverlay').classList.add('active');
+        return false;
+    }
+
     function confirmDelete(url, name) {
         document.getElementById('confirmName').textContent = name;
-        document.getElementById('confirmLink').href = url;
-        document.getElementById('confirmOverlay').classList.add('active');
+        return confirmAction({
+            url,
+            title: '¿Eliminar producto?',
+            message: '¿Seguro que quieres eliminar <strong id="confirmName"></strong> de tu carrito?',
+            confirmText: 'Sí, eliminar',
+            icon: '🗑️',
+            mode: 'danger'
+        });
     }
 
     function closeConfirm() {
