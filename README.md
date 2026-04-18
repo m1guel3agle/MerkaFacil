@@ -23,22 +23,28 @@ git clone https://github.com/m1guel3agle/MerkaFacil.git
 cd MerkaFacil
 ```
 
-**2. Install dependencies**
+**2. Set up virtual environment**
 ```bash
-pip install django pillow
+python3.12 -m venv .venv
+source .venv/bin/activate   # On Windows: .venv\Scripts\activate
 ```
 
-**3. Create a superuser for the admin panel**
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+**4. Create a superuser for the admin panel**
 ```bash
 python manage.py createsuperuser
 ```
 
-**4. Run the server**
+**5. Run the server**
 ```bash
 python manage.py runserver
 ```
 
-**5. Open in your browser**
+**6. Open in your browser**
 ```
 http://127.0.0.1:8000/
 ```
