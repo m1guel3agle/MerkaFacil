@@ -12,4 +12,5 @@ urlpatterns = [
     path("payment/<int:order_id>/", views.select_payment, name="select_payment"),
     path("confirmation/<int:order_id>/", views.order_confirmation, name="order_confirmation"),
     path("orders/", views.my_orders, name="my_orders"),
+    path("orders/<int:order_id>/cancel/", views.cancel_order, name="cancel_order"),
 ]

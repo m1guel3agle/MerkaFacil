@@ -101,6 +101,36 @@
     }
 
     .btn-catalog:hover { opacity: 0.85; }
+
+    /* === Botón cancelar orden === */
+    .cancel-footer {
+        padding: 10px 20px;
+        background: #fafafa;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-cancel-order {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #FFEBEE;
+        color: #C62828;
+        border: 1px solid #FFCDD2;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-cancel-order:hover {
+        background: #FFCDD2;
+        border-color: #EF9A9A;
+    }
 </style>
 
 <div class="orders-container">
@@ -141,6 +171,22 @@
             </table>
 
             <div class="order-total">Total: ${{ order.total|floatformat:0 }}</div>
+
+            {% if order.status == "pending" %}
+            {% url 'cancel_order' order.id as cancel_url %}
+            <div class="cancel-footer">
+                <button
+                    class="btn-cancel-order"
+                    data-cancel-url="{{ cancel_url }}"
+                    data-order-id="{{ order.id }}"
+                    data-order-ts="{{ order.date|date:'U' }}"
+                    onclick="confirmCancelOrder(this.dataset.cancelUrl, this.dataset.orderId, this.dataset.orderTs)"
+                >
+                    ✖ Cancelar orden
+                </button>
+            </div>
+            {% endif %}
+
         </div>
         {% endfor %}
 
@@ -153,5 +199,91 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+function confirmCancelOrder(cancelUrl, orderId, orderTimestamp) {
+    const now = Math.floor(Date.now() / 1000);
+    const secondsElapsed = now - parseInt(orderTimestamp);
+
+    if (secondsElapsed >= 120) {
+        confirmAction({
+            url: '#',
+            title: 'Tiempo expirado',
+            message: 'Han pasado más de 2 minutos desde que se realizó el pedido. Ya no es posible cancelarlo.',
+            confirmText: 'Entendido',
+            icon: '⏰',
+            mode: 'warning'
+        });
+        document.getElementById('confirmLink').onclick = function(e) {
+            e.preventDefault();
+            closeConfirm();
+        };
+        return false;
+    }
+
+    confirmAction({
+        url: cancelUrl,
+        title: '¿Cancelar pedido #' + orderId + '?',
+        message: 'Esta acción no se puede deshacer. El pedido quedará marcado como <strong>cancelado</strong>.',
+        confirmText: 'Sí, cancelar pedido',
+        icon: '⚠️',
+        mode: 'warning'
+    });
+
+    document.getElementById('confirmLink').onclick = function(e) {
+        e.preventDefault();
+        const csrfToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+
+        fetch(cancelUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+        .then(res => res.json())
+        .then(data => {
+            closeConfirm();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                confirmAction({
+                    url: '#',
+                    title: 'No se pudo cancelar',
+                    message: data.error || 'Ocurrió un error al cancelar el pedido.',
+                    confirmText: 'Entendido',
+                    icon: '❌',
+                    mode: 'warning'
+                });
+                document.getElementById('confirmLink').onclick = function(e) {
+                    e.preventDefault();
+                    closeConfirm();
+                };
+            }
+        })
+        .catch(() => {
+            closeConfirm();
+            confirmAction({
+                url: '#',
+                title: 'Error de red',
+                message: 'No se pudo conectar con el servidor. Intenta de nuevo.',
+                confirmText: 'Entendido',
+                icon: '❌',
+                mode: 'warning'
+            });
+            document.getElementById('confirmLink').onclick = function(e) {
+                e.preventDefault();
+                closeConfirm();
+            };
+        });
+    };
+
+    return false;
+}
+</script>
 
 {% endblock %}

@@ -2,6 +2,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.utils import timezone
+from datetime import timedelta
 from .cart import Cart
 from .models import Order, OrderItem
 from products.models import Product
@@ -88,7 +90,6 @@ def checkout(request):
             )
 
         cart.clear()
-        # Redirigir a selección de método de entrega
         return redirect("select_delivery", order_id=order.id)
 
     return redirect("cart")
@@ -99,28 +100,26 @@ def checkout(request):
 def select_delivery(request, order_id):
     """Seleccionar método de entrega: delivery o pickup"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    
+
     if request.method == "POST":
         delivery_method = request.POST.get("delivery_method")
-        
+
         if delivery_method not in ["pickup", "delivery"]:
             return redirect("select_delivery", order_id=order.id)
-        
+
         order.delivery_method = delivery_method
-        
+
         # Si es delivery, agregar costo de envío (5.000 pesos)
         if delivery_method == "delivery":
             order.total += 5000
-        
+
         order.save()
-        
-        # Si es delivery, ir a seleccionar método de pago
-        # Si es pickup, ir a confirmación
+
         if delivery_method == "delivery":
             return redirect("select_payment", order_id=order.id)
         else:
             return redirect("order_confirmation", order_id=order.id)
-    
+
     return render(request, "carrito/SelectDelivery.html", {"order": order})
 
 
@@ -129,22 +128,22 @@ def select_delivery(request, order_id):
 def select_payment(request, order_id):
     """Seleccionar método de pago: efectivo o tarjeta (solo para delivery)"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    
+
     # Validar que sea delivery
     if order.delivery_method != "delivery":
         return redirect("order_confirmation", order_id=order.id)
-    
+
     if request.method == "POST":
         payment_method = request.POST.get("payment_method")
-        
+
         if payment_method not in ["cash", "card"]:
             return redirect("select_payment", order_id=order.id)
-        
+
         order.payment_method = payment_method
         order.save()
-        
+
         return redirect("order_confirmation", order_id=order.id)
-    
+
     return render(request, "carrito/SelectPayment.html", {"order": order})
 
 
@@ -158,3 +157,32 @@ def order_confirmation(request, order_id):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user)
     return render(request, "carrito/Orders.html", {"orders": orders})
+
+
+@login_required
+def cancel_order(request, order_id):
+    """Cancel an order only if it is within the 2-minute cancellation window."""
+    if request.method != "POST":
+        return JsonResponse({"error": "Método no permitido"}, status=405)
+
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status != "pending":
+        return JsonResponse(
+            {"error": "Solo se pueden cancelar órdenes en estado pendiente."},
+            status=400,
+        )
+
+    if timezone.now() > order.date + timedelta(minutes=2):
+        return JsonResponse(
+            {"error": "El tiempo límite de cancelación (2 minutos) ha expirado."},
+            status=400,
+        )
+
+    order.status = "cancelled"
+    order.save()
+
+    return JsonResponse({
+        "success": True,
+        "message": f"Pedido #{order.id} cancelado correctamente.",
+    })

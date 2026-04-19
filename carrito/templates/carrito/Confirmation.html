@@ -127,6 +127,21 @@
     .btn-seguir { background: var(--naranja-marca); }
     .btn-orders:hover, .btn-seguir:hover { opacity: 0.85; }
 
+    .btn-cancelar {
+        color: white;
+        padding: 11px 22px;
+        border-radius: 8px;
+        border: none;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        background: #C62828;
+    }
+
+    .btn-cancelar:hover { opacity: 0.85; }
+
     @media (max-width: 680px) {
         .confirmacion-container {
             margin: 20px;
@@ -215,7 +230,105 @@
     <div class="acciones">
         <a href="{% url 'my_orders' %}" class="btn-orders">📋 Mis pedidos</a>
         <a href="{% url 'catalog' %}" class="btn-seguir">🛍️ Seguir comprando</a>
+        {% if order.status == "pending" %}
+        {% url 'cancel_order' order.id as cancel_url %}
+        <button
+            class="btn-cancelar"
+            data-cancel-url="{{ cancel_url }}"
+            data-order-id="{{ order.id }}"
+            data-order-ts="{{ order.date|date:'U' }}"
+            onclick="confirmCancelOrder(this.dataset.cancelUrl, this.dataset.orderId, this.dataset.orderTs)"
+        >
+            ✖ Cancelar orden
+        </button>
+        {% endif %}
     </div>
 </div>
+
+<script>
+function confirmCancelOrder(cancelUrl, orderId, orderTimestamp) {
+    const now = Math.floor(Date.now() / 1000);
+    const secondsElapsed = now - parseInt(orderTimestamp);
+
+    if (secondsElapsed >= 120) {
+        confirmAction({
+            url: '#',
+            title: 'Tiempo expirado',
+            message: 'Han pasado más de 2 minutos desde que se realizó el pedido. Ya no es posible cancelarlo.',
+            confirmText: 'Entendido',
+            icon: '⏰',
+            mode: 'warning'
+        });
+        document.getElementById('confirmLink').onclick = function(e) {
+            e.preventDefault();
+            closeConfirm();
+        };
+        return false;
+    }
+
+    confirmAction({
+        url: cancelUrl,
+        title: '¿Cancelar pedido #' + orderId + '?',
+        message: 'Esta acción no se puede deshacer. El pedido quedará marcado como <strong>cancelado</strong>.',
+        confirmText: 'Sí, cancelar pedido',
+        icon: '⚠️',
+        mode: 'warning'
+    });
+
+    document.getElementById('confirmLink').onclick = function(e) {
+        e.preventDefault();
+        const csrfToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+
+        fetch(cancelUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+        .then(res => res.json())
+        .then(data => {
+            closeConfirm();
+            if (data.success) {
+                window.location.href = "{% url 'my_orders' %}";
+            } else {
+                confirmAction({
+                    url: '#',
+                    title: 'No se pudo cancelar',
+                    message: data.error || 'Ocurrió un error al cancelar el pedido.',
+                    confirmText: 'Entendido',
+                    icon: '❌',
+                    mode: 'warning'
+                });
+                document.getElementById('confirmLink').onclick = function(ev) {
+                    ev.preventDefault();
+                    closeConfirm();
+                };
+            }
+        })
+        .catch(() => {
+            closeConfirm();
+            confirmAction({
+                url: '#',
+                title: 'Error de red',
+                message: 'No se pudo conectar con el servidor. Intenta de nuevo.',
+                confirmText: 'Entendido',
+                icon: '❌',
+                mode: 'warning'
+            });
+            document.getElementById('confirmLink').onclick = function(ev) {
+                ev.preventDefault();
+                closeConfirm();
+            };
+        });
+    };
+
+    return false;
+}
+</script>
 
 {% endblock %}
