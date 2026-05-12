@@ -23,6 +23,8 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
+            if user.is_superuser:
+                return redirect("/admin/")
             return redirect("home")
 
         error = (
