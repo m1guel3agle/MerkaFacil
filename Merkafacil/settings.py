@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+j-(o4y_0xh8i=8!8@@z(((#m984p04$%0ioq9#tr3qy4@7jzw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['107.23.226.56']
+ALLOWED_HOSTS = ['107.23.226.56', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'products.apps.ProductsConfig',
-    'carrito',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'carrito.context_processors.cart_count',
+                'cart.context_processors.cart_count',
             ],
         },
     },
@@ -144,12 +144,12 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
     "welcome_sign": "Bienvenido al panel de administración",
     "copyright": "MerkaFácil",
-    "search_model": ["auth.user", "products.product", "carrito.order"],
+    "search_model": ["auth.user", "products.product", "cart.order"],
     "user_avatar": None,
     "topmenu_links": [
         {"name": "Inicio", "url": "home", "permissions": ["auth.view_user"]},
         {"name": "Productos", "url": "/products/", "permissions": ["auth.view_user"]},
-        {"app": "carrito"},
+        {"app": "cart"},
     ],
     "usermenu_links": [
         {"name": "Ver tienda", "url": "/", "new_window": False},
@@ -162,7 +162,7 @@ JAZZMIN_SETTINGS = {
         "auth",
         "core",
         "products",
-        "carrito",
+        "cart",
     ],
     "icons": {
         "auth": "fas fa-users-cog",
@@ -170,8 +170,8 @@ JAZZMIN_SETTINGS = {
         "auth.group": "fas fa-users",
         "core.storeconfig": "fas fa-store",
         "products.product": "fas fa-box-open",
-        "carrito.order": "fas fa-shopping-bag",
-        "carrito.orderitem": "fas fa-list-ul",
+        "cart.order": "fas fa-shopping-bag",
+        "cart.orderitem": "fas fa-list-ul",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",

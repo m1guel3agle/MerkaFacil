@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('carrito', '0004_sql_rename_imagen_to_image'),
+        ('cart', '0004_sql_rename_imagen_to_image'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

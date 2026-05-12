@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("carrito", "0002_rename_pedido_order_and_fields"),
+        ("cart", "0002_rename_pedido_order_and_fields"),
     ]
 
     operations = [

@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('precio', models.DecimalField(decimal_places=0, max_digits=10)),
                 ('cantidad', models.IntegerField()),
                 ('imagen', models.CharField(blank=True, max_length=500)),
-                ('pedido', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='carrito.pedido')),
+                ('pedido', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='cart.pedido')),
             ],
         ),
     ]

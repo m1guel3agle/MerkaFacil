@@ -45,7 +45,7 @@ def clear_cart(request):
 def view_cart(request):
     cart = Cart(request)
     store = StoreConfig.get()
-    return render(request, "carrito/Cart.html", {
+    return render(request, "cart/Cart.html", {
         "cart": cart,
         "total": cart.total(),
         "store_open": store.is_open,
@@ -61,7 +61,7 @@ def checkout(request):
         store = StoreConfig.get()
         if not store.is_open:
             cart = Cart(request)
-            return render(request, "carrito/Cart.html", {
+            return render(request, "cart/Cart.html", {
                 "cart": cart,
                 "total": cart.total(),
                 "store_open": False,
@@ -120,7 +120,7 @@ def select_delivery(request, order_id):
         else:
             return redirect("order_confirmation", order_id=order.id)
 
-    return render(request, "carrito/SelectDelivery.html", {"order": order})
+    return render(request, "cart/SelectDelivery.html", {"order": order})
 
 
 # FR-5: Seleccionar método de pago
@@ -144,19 +144,19 @@ def select_payment(request, order_id):
 
         return redirect("order_confirmation", order_id=order.id)
 
-    return render(request, "carrito/SelectPayment.html", {"order": order})
+    return render(request, "cart/SelectPayment.html", {"order": order})
 
 
 @login_required
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, "carrito/Confirmation.html", {"order": order})
+    return render(request, "cart/Confirmation.html", {"order": order})
 
 
 @login_required
 def my_orders(request):
     orders = Order.objects.filter(user=request.user)
-    return render(request, "carrito/Orders.html", {"orders": orders})
+    return render(request, "cart/Orders.html", {"orders": orders})
 
 
 @login_required
