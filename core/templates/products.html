@@ -30,6 +30,7 @@
         display: flex;
         flex-direction: column;
         transition: transform 0.22s, box-shadow 0.22s;
+        cursor: pointer;
     }
 
     .card:hover {
@@ -67,7 +68,7 @@
 
     .stock-ok { font-size: 13px; font-weight: 600; color: #43a047; }
     .stock-out { font-size: 13px; font-weight: 600; color: #e53935; }
-    .card-footer { padding: 0 16px 16px; }
+    .card-footer { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 6px; }
 
     .btn-add {
         display: block;
@@ -84,6 +85,7 @@
         transition: background 0.2s;
         text-align: center;
         text-decoration: none;
+        box-sizing: border-box;
     }
 
     .btn-add:hover { background: var(--verde-oscuro); }
@@ -92,6 +94,28 @@
         background: #ccc;
         cursor: not-allowed;
     }
+
+    .btn-fav {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+        border: 2px solid #e53935;
+        border-radius: 8px;
+        background: white;
+        color: #e53935;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+
+    .btn-fav:hover { background: #ffebee; }
+    .btn-fav.fav-active { background: #e53935; color: white; }
+    .btn-fav.fav-active:hover { background: #c62828; }
 
     .aviso-cierre {
         background: #fff3cd;
@@ -123,7 +147,14 @@
 
     <div class="grid">
         {% for product in products %}
-        <div class="card">
+        <div class="card"
+             data-name="{{ product.name }}"
+             data-image="{% if product.image %}{{ product.image.url }}{% endif %}"
+             data-price="{{ product.price }}"
+             data-stock="{{ product.stock }}"
+             data-description="{{ product.description|default:'' }}"
+             data-id="{{ product.id }}"
+             data-favorite="{% if product.id in favorite_ids %}1{% else %}0{% endif %}">
 
             {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}">
@@ -143,9 +174,20 @@
 
             <div class="card-footer">
                 {% if product.stock > 0 %}
-                    <a href="{% url 'add' product.id %}" class="btn-add">+ Agregar al carrito</a>
+                    <a href="{% url 'add' product.id %}" class="btn-add"
+                       onclick="event.stopPropagation()">+ Agregar al carrito</a>
                 {% else %}
                     <span class="btn-add disabled">Sin stock</span>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <button class="btn-fav {% if product.id in favorite_ids %}fav-active{% endif %}"
+                            id="fav-btn-{{ product.id }}"
+                            data-fav-id="{{ product.id }}">
+                        {% if product.id in favorite_ids %}❤️ Favorito{% else %}Favoritos{% endif %}
+                    </button>
+                {% else %}
+                    <a href="/login/" class="btn-fav" onclick="event.stopPropagation()">Favoritos</a>
                 {% endif %}
             </div>
 
@@ -156,5 +198,30 @@
     </div>
 
 </div>
+
+<script>
+document.querySelectorAll('.card[data-id]').forEach(function(card) {
+    card.addEventListener('click', function() {
+        openModal(
+            this.dataset.name,
+            this.dataset.image,
+            parseInt(this.dataset.price),
+            parseInt(this.dataset.stock),
+            this.dataset.description,
+            parseInt(this.dataset.id),
+            this.dataset.favorite === '1'
+        );
+    });
+});
+
+document.querySelectorAll('.btn-fav[data-fav-id]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        quickToggleFav(parseInt(this.dataset.favId), this);
+    });
+});
+</script>
+
+{% include "products_modal.html" %}
 
 {% endblock %}

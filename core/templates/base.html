@@ -241,6 +241,7 @@
         {% if user.is_authenticated %}
             <span class="user">Hola, {{ user.username }}</span>
             <a href="{% url 'my_orders' %}"><button>📋 Mis pedidos</button></a>
+            <a href="{% url 'my_favorites' %}"><button>Favoritos</button></a>
             <a href="{% url 'logout' %}" onclick="return confirmAction({ url: this.href, title: '¿Cerrar sesión?', message: '¿Seguro que quieres salir de tu cuenta actual?', confirmText: 'Sí, cerrar sesión', icon: '🚪', mode: 'warning' });">
                 <button>Cerrar sesión</button>
             </a>

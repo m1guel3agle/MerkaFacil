@@ -10,6 +10,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_filter = ("stock",)
     ordering = ("name",)
+    fields = ("name", "description", "price", "stock", "image")
 
     @admin.display(boolean=True, description="Imagen")
     def has_image(self, obj):

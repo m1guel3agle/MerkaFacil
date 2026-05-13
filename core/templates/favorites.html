@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 10px;
+    }
+    h1 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 28px;
+        color: var(--texto-oscuro);
+        margin-bottom: 20px;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    .card {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.22s, box-shadow 0.22s;
+        cursor: pointer;
+    }
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.13);
+    }
+    .card img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+    .card-body { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .card h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--texto-oscuro); }
+    .price { font-family: 'Fredoka One', cursive; font-size: 20px; color: var(--verde-principal); }
+    .stock-ok { font-size: 13px; font-weight: 600; color: #43a047; }
+    .stock-out { font-size: 13px; font-weight: 600; color: #e53935; }
+    .card-footer { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .btn-add {
+        display: block;
+        width: 100%;
+        padding: 9px 0;
+        border: none;
+        border-radius: 8px;
+        background: var(--verde-principal);
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-align: center;
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+    .btn-add:hover { background: var(--verde-oscuro); }
+    .btn-add.disabled { background: #ccc; cursor: not-allowed; }
+    .btn-remove-fav {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+        border: 2px solid #e53935;
+        border-radius: 8px;
+        background: #e53935;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .btn-remove-fav:hover { background: #c62828; border-color: #c62828; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+    .empty-state .icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-state p { font-size: 18px; margin-bottom: 20px; }
+    .empty-state a {
+        display: inline-block;
+        padding: 10px 24px;
+        background: var(--verde-principal);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container">
+    <h1>❤️ Mis favoritos</h1>
+
+    {% if favorites %}
+    <div class="grid" id="favorites-grid">
+        {% for fav in favorites %}
+        <div class="card"
+             id="fav-card-{{ fav.product.id }}"
+             data-name="{{ fav.product.name }}"
+             data-image="{% if fav.product.image %}{{ fav.product.image.url }}{% endif %}"
+             data-price="{{ fav.product.price }}"
+             data-stock="{{ fav.product.stock }}"
+             data-description="{{ fav.product.description|default:'' }}"
+             data-id="{{ fav.product.id }}"
+             data-favorite="1">
+
+            {% if fav.product.image %}
+                <img src="{{ fav.product.image.url }}" alt="{{ fav.product.name }}">
+            {% else %}
+                <div style="width:100%;height:160px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);display:flex;align-items:center;justify-content:center;font-size:48px;">🛒</div>
+            {% endif %}
+
+            <div class="card-body">
+                <h3>{{ fav.product.name }}</h3>
+                <div class="price">$ {{ fav.product.price }}</div>
+                {% if fav.product.stock > 0 %}
+                    <div class="stock-ok">✔ Disponible</div>
+                {% else %}
+                    <div class="stock-out">✖ Sin stock</div>
+                {% endif %}
+            </div>
+
+            <div class="card-footer">
+                {% if fav.product.stock > 0 %}
+                    <a href="{% url 'add' fav.product.id %}" class="btn-add"
+                       onclick="event.stopPropagation()">+ Agregar al carrito</a>
+                {% else %}
+                    <span class="btn-add disabled">Sin stock</span>
+                {% endif %}
+                <button class="btn-remove-fav"
+                        onclick="event.stopPropagation(); removeFavorite({{ fav.product.id }}, this)">
+                    ❤️ Quitar de favoritos
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <div class="icon">🛒</div>
+        <p>No tienes productos favoritos todavía.</p>
+        <a href="{% url 'catalog' %}">Ver catálogo</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.card[data-id]').forEach(function(card) {
+    card.addEventListener('click', function() {
+        openModal(
+            this.dataset.name,
+            this.dataset.image,
+            parseInt(this.dataset.price),
+            parseInt(this.dataset.stock),
+            this.dataset.description,
+            parseInt(this.dataset.id),
+            this.dataset.favorite === '1'
+        );
+    });
+});
+
+function removeFavorite(productId, btn) {
+    fetch('/favorites/toggle/' + productId + '/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCsrfToken(),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'removed') {
+            var card = document.getElementById('fav-card-' + productId);
+            if (card) {
+                card.style.transition = 'opacity 0.3s, transform 0.3s';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                setTimeout(function() {
+                    card.remove();
+                    var grid = document.getElementById('favorites-grid');
+                    if (grid && grid.children.length === 0) location.reload();
+                }, 300);
+            }
+        }
+    });
+}
+</script>
+
+{% include "products_modal.html" %}
+
+{% endblock %}

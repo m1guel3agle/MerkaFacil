@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import StoreConfig
+from .models import Favorite, StoreConfig
 
 
 @admin.register(StoreConfig)
@@ -19,3 +19,11 @@ class StoreConfigAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, _request, _obj=None):
         return False
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ("user", "product", "created_at")
+    list_filter = ("user",)
+    search_fields = ("user__username", "product__name")
+    readonly_fields = ("created_at",)
