@@ -248,6 +248,7 @@
             <span class="user">Hola, {{ user.username }}</span>
             <a href="{% url 'my_orders' %}"><button>📋 Mis pedidos</button></a>
             <a href="{% url 'my_favorites' %}"><button>Favoritos</button></a>
+            <!-- FR 29 -->
             {% if user.is_staff %}
                 <a href="/admin/"><button class="btn-admin">⚙️ Admin</button></a>
             {% endif %}
